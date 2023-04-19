@@ -66,3 +66,12 @@ Me and a colleague wor
 ## Use Case: Multiple Origins
 
 I forked a repository
+
+## Use Case: A non-tracked file is changed on another branch
+
+````
+error: The following untracked working tree files would be overwritten by checkout:
+	file.txt
+Please move or remove them before you switch branches.
+Aborting
+````

@@ -8,6 +8,12 @@ I want to "get" my colleague's code on my branch.
 
 BAD: git merge main
 
+## Use Case: Manually edit files in branch
+I manually edit files, so the branch is "dirty" and on ```git pull``` I receive erros.
+
+## Use Case: I want new GIT repo from current branch
+I want to transfer current branch to new GIT repository as a new project
+
 ## Use Case: Redo last commit
 I did a commit but I want to add some files to it.
 

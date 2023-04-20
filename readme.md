@@ -75,3 +75,12 @@ error: The following untracked working tree files would be overwritten by checko
 Please move or remove them before you switch branches.
 Aborting
 ````
+## Use Case: Take File Version from Another Branch
+
+## Use Case: Preview Stash Without Applying It
+
+## Use Case: Compare File
+
+git diff feat/api_makefile -- package.json
+
+## Use Case: 

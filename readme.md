@@ -1,25 +1,42 @@
 # Git Exercises
 
-Git "lg" alias is configured to use a pretty print git history.
-Usage: git lg
+This repository is a list of git usecases that are commonly encountered during devleopment.
+Its primary goal is to show you how you can get into a delicate situation and train you how to solve it.
 
-As a best practice and for security reasons you can the exercises in a docker image:
+## Usage
 
-```
-docker run -ti --rm -v $(pwd):/git --entrypoint /bin/sh alpine/git
-```
+Each test case is associated with a POSIX shell script that prepares a local repository located in the *workspace* directory.
 
-Note that after running you may need to manually clean the workspace and .git-repos directories with "sudo".
+Normally you will do the following for most use-cases:
+
+1. Run the associate .sh script
+2. cd workspace/<use_case_name>.sh
+3. Solve the problem using git commands
+
+Technical Notes:
+
+- Each script will clean the *workspace* and you will get a fresh start
+- A remote repository is configured in the *.git-repos* directory.
+- Git "lg" alias is configured to use a pretty print git history. Usage: "git lg"
+- As a best practice and for security reasons you can the exercises in a docker image:
+
+    ```
+    docker run -ti --rm -v $(pwd):/git --entrypoint /bin/sh alpine/git
+    ```
+
+- Note that after running you may need to manually clean the workspace and .git-repos directories with "sudo".
+
+## Use Cases
 
 
-## Use Case: Abort a merge
+### Use Case: Abort a merge
 I accidentally typed the ```git merge feat``` command and now I am prompted a message for the merge.
 I want to abort this merge.
 
 Traps:
 - If you close the file or save and close the merge will happen
 
-## Use Case: Merge a feat into main with no merge commit 
+### Use Case: Merge a feat into main with no merge commit 
 
 I finished working on my feature
 And I want to merge my code to main
@@ -28,7 +45,7 @@ In order to keep history clean and linear
 
 Run: "no_merge_to_main.sh"
 
-## Use Case: Get Most Recent Code from Main
+### Use Case: Get Most Recent Code from Main
 
 I work on a "feature" branch
 And a colleague of mine did a fix that is on "main" branch
@@ -36,12 +53,12 @@ I want to "get" my colleague's code on my branch.
 
 Run: "get_most_recent_code_from_main.sh"
 
-## Use Case: Detached Head
+### Use Case: Detached Head
 
 I did a wrong checkout
 And now my HEAD is in "detached" state
 
-## Use Case: Redo last commit
+### Use Case: Redo last commit
 I did a commit but I want to add some files to it.
 I want to push my code to the remote
 
@@ -50,7 +67,7 @@ Run: "redo_last_commit.sh"
 Traps:
 - main needs to be forced but already had 1 commit in advance. If force pushed without rebase we will lose the commit.
 
-## Use Case: Clean a WIP commit 
+### Use Case: Clean a WIP commit 
 
 I worked on a feature
 And I had to quickly change a branch so I performed a "WIP" commit at one point.
@@ -65,28 +82,28 @@ Solve for:
 
 Run: "clean_wip_commit.sh"
 
-## Use Case: Too many commits
+### Use Case: Too many commits
 
 I worked on a feature and did too many commits
 I wish to fuse them together before opening a merge request.
 
 Run: "too_many_commits.sh"
 
-## Use Case: Edit a previous commit (not last)
+### Use Case: Edit a previous commit (not last)
 
 I did two commits: one for backend and then one for frontend
 But I forgot to add one file in the backend commit
 
 Run: "edit_second_to_last_commit.sh"
 
-## Use Case: Quickly change branch
+### Use Case: Quickly change branch
 
 I am working on a feature and have not yet commited
 But I need to quickly change branch to main to fix an urgent issue.
 
 Run: "quickly_change_branch.sh"
 
-## Use Case: A non-tracked file is changed on another branch
+### Use Case: A non-tracked file is changed on another branch
 
 I encountered the following error
 
@@ -99,42 +116,48 @@ Aborting
 
 Run: "non_tracked_file_checkout.sh"
 
-## Use Case: Check Stash Without Applying
+### Use Case: Check Stash Without Applying
 
-## Use Case: Conflict resolution
+### Use Case: Conflict resolution
 
-## Use Case: Accidentally push force
+### Use Case: Accidentally push force
 
-## Use Case: Accidental merge from main
+### Use Case: Accidental merge from main
 
 I worked on a feature and I wanted to rebase upon main
 But instead I did a merge
 
-## Use Case: Split a commit
+### Use Case: Split a commit
 
 I did one big commit that has too many changes
 I want to split it into two commits
 
-## Use Case: Branch merged upon itself
+### Use Case: Branch merged upon itself
 
 Me and a colleague wor
 
-## Use Case: Multiple Origins
+### Use Case: Multiple Origins
 
 I forked a repository
 
-## Use Case: Take File Version from Another Branch
+### Use Case: Take File Version from Another Branch
 
-## Use Case: Preview Stash Without Applying It
+### Use Case: Preview Stash Without Applying It
 
-## Use Case: Compare File
+### Use Case: Compare File
 
 git diff feat/api_makefile -- package.json
 
-## Use Case: Local untracked file overwritten
+### Use Case: Local untracked file overwritten
 I manually edit files, so the branch is "dirty" and on ```git pull``` I receive erros.
 
-## Use Case: I want new GIT repo from current branch
+### Use Case: I want new GIT repo from current branch
 I want to transfer current branch to new GIT repository as a new project
 
-## Use Case: Gitignore
+### Use Case: Gitignore
+
+### Use Case: I want to ignore a file that is already commited
+
+I have already commited a file named "dist"
+And I have pushed to main
+Now I want to ignore it

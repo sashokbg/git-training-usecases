@@ -8,17 +8,16 @@ REPO_NAME="$(basename $0 '.sh')"
 init_repo $REPO_NAME
 cd workspace/$REPO_NAME
 
+git branch feat
+
 echo "content" > file1.txt
 git add .
 git commit -m "first commit"
 
-git checkout -b feat
+git checkout feat
 
-echo "content2" > file2.txt
+echo "content2" >> file2.txt
 git add .
 git commit -m "second commit"
-
-git push origin main
-git push origin feat
 
 git checkout main

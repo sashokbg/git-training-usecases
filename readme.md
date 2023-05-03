@@ -37,6 +37,8 @@ I want to abort this merge.
     - If you close the file or save and close the merge will happen
 </details>
 
+Run: abort_a_merge.sh
+
 ### Use Case: Merge a feat into main with no merge commit 
 
 I finished working on my feature
@@ -167,8 +169,10 @@ Run: pull_generates_merge.sh
 I forked a repository from a remote
 Someone has pushed some new code to the original remote in branch main
 I want to get the latest changes from the original remote
+(The second remote is found at .git-repos/
 
 Hint: Use the file:// protocol 
+
 
 ### Use Case: Take File Version from Another Branch
 

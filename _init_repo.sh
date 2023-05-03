@@ -21,7 +21,7 @@ function init_repo() {
   mkdir -p $GIT_REPOS/$REPO_NAME.git
   git init --initial-branch "main" --bare $GIT_REPOS/$REPO_NAME.git
 
-  git clone file:////$(pwd)/$GIT_REPOS/$REPO_NAME.git "$(pwd)/workspace/$REPO_NAME"
+  git clone file://$(pwd)/$GIT_REPOS/$REPO_NAME.git "$(pwd)/workspace/$REPO_NAME"
 
   cd "workspace/$REPO_NAME"
   git config init.defaultBranch "main"

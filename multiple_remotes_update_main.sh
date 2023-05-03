@@ -25,4 +25,6 @@ git pull origin main
 
 echo "content2" > file2.txt
 git add .
-git commit -m "second commit"
+git commit -m "(Upstream) second commit"
+
+git push origin main

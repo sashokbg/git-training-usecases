@@ -5,7 +5,7 @@ Its primary goal is to show you how you can get into a delicate situation and tr
 
 ## Usage
 
-Each test case is associated with a POSIX shell script that prepares a local repository located in the *workspace* directory.
+Each test case is associated with a POSIX shell script that prepares a local repository located in the **workspace** directory.
 
 Normally you will do the following for most use-cases:
 
@@ -16,10 +16,10 @@ Normally you will do the following for most use-cases:
 Technical Notes:
 
 - Each script will clean the **workspace** and you will get a fresh start
-- A remote repository is configured in the **.git-repos** directory.
-- Git "lg" alias is configured to use a pretty print git history. Usage: "git lg"
+- A remote repository is configured in the **.git-repos** directory by using the file:// protocol. This means that "git remote -v" will output something like **/home/alexander/git-training-usecases/.git-repos/<repo>**.
+- If you don't have global username and email configured default values will be put for you in the workspace repos.
+- Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
 - As a best practice and for security reasons you can the exercises in a docker image:
-
     ```
     docker run -ti --rm -v $(pwd):/git --entrypoint /bin/sh alpine/git
     ```
@@ -61,14 +61,15 @@ Run: "get_most_recent_code_from_main.sh"
 I did a wrong checkout
 And now my HEAD is in "detached" state
 
+Run: detached_head.sh
+
 ### Use Case: Redo last commit
 I did a commit but I want to add some files to it.
 I want to push my code to the remote
 
 Run: "redo_last_commit.sh"
 
-Traps:
-- main needs to be forced but already had 1 commit in advance. If force pushed without rebase we will lose the commit.
+Attention trap ahead !
 
 ### Use Case: Clean a WIP commit 
 
@@ -146,7 +147,12 @@ Run: "accidental_merge.sh"
 
 ### Use Case: Check Stash Without Applying
 
-### Use Case: Conflict resolution
+### Use Case: Rebase Conflict Resolution
+I edited the text1.txt file
+I want to rebase my feat branch onto main
+But another user edited the same file on main
+
+Run: rebase_conflict.sh
 
 ### Use Case: Split a commit
 
@@ -171,10 +177,16 @@ Someone has pushed some new code to the original remote in branch main
 I want to get the latest changes from the original remote
 (The second remote is found at .git-repos/
 
-Hint: Use the file:// protocol 
+Hint: Use the file:// protocol for the second remote and point at <path-to-repo>/.git-repos/multiple_remotes_get_main-upstream.git
 
+Run: multiple_remotes_update_main.sh
 
 ### Use Case: Take File Version from Another Branch
+
+I am working on a branch feat
+And I want to get the version of file "file1.txt" from the "feat/other" branch
+
+Run: take_file_another_branch.sh
 
 ### Use Case: Preview Stash Without Applying It
 
@@ -182,16 +194,19 @@ Hint: Use the file:// protocol
 
 git diff feat/api_makefile -- package.json
 
-### Use Case: Local untracked file overwritten
-I manually edit files, so the branch is "dirty" and on ```git pull``` I receive erros.
-
 ### Use Case: I want new GIT repo from current branch
-I want to transfer current branch to new GIT repository as a new project
 
-### Use Case: Gitignore
+I want to transfer current branch to new GIT repository as a new project
 
 ### Use Case: I want to ignore a file that is already commited
 
-I have already commited a file named "dist"
-And I have pushed to main
-Now I want to ignore it
+I want to ignore the dist directory
+
+Run: ignore_dist.sh
+
+### Use Case: Create a branch results in "refs/heads/..." exists
+
+I try to create a branch called "feat/my_feat"
+But it results in an error "refs/heads/my_feat" exists. Cannot create ...
+
+Run: checkout_error_ref_exists.sh

@@ -1,3 +1,8 @@
+function aliases() {
+  git config alias.s "status"
+  git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
+}
+
 function init_repo() {
   set -e
 
@@ -25,9 +30,9 @@ function init_repo() {
 
   cd "workspace/$REPO_NAME"
   git config init.defaultBranch "main"
-  git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
   git commit -m "init" --allow-empty
   git push origin main
+  aliases
   cd -
 
   if [ ! -z $SECONDARY_REPO ];
@@ -35,7 +40,7 @@ function init_repo() {
     git clone file:////$(pwd)/$GIT_REPOS/$REPO_NAME.git "$(pwd)/workspace/${REPO_NAME}-2"
     cd "workspace/${REPO_NAME}-2"
     git config init.defaultBranch "main"
-    git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
+    aliases
     cd -
   fi
 }

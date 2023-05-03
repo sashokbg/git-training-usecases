@@ -12,11 +12,17 @@ echo "content" > file1.txt
 git add .
 git commit -m "first commit"
 
-git checkout -b feat
+git branch feat
 
 echo "content2" > file2.txt
 git add .
 git commit -m "second commit"
+
+git checkout feat
+
+echo "content3" > file3.txt
+git add .
+git commit -m "third commit"
 
 git checkout main
 git merge feat --no-ff

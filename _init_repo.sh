@@ -12,7 +12,10 @@ function init_repo() {
 
   GIT_REPOS=.git-repos
 
-  rm -rf "$(pwd)/workspace/$REPO_NAME" "$(pwd)/workspace/$SECONDARY_REPO"
+  echo "Cleaning $(pwd)/workspace/*"
+
+  rm -rf "$(pwd)/workspace"
+  mkdir -p "$(pwd)/workspace"
   rm -rf $GIT_REPOS
 
   mkdir -p $GIT_REPOS/$REPO_NAME.git
@@ -23,12 +26,14 @@ function init_repo() {
   cd "workspace/$REPO_NAME"
   git config init.defaultBranch "main"
   git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
+  git commit -m "init" --allow-empty
+  git push origin main
   cd -
 
   if [ ! -z $SECONDARY_REPO ];
   then
-    git clone file:////$(pwd)/$GIT_REPOS/$REPO_NAME.git "$(pwd)/workspace/$SECONDARY_REPO"
-    cd "workspace/$SECONDARY_REPO"
+    git clone file:////$(pwd)/$GIT_REPOS/$REPO_NAME.git "$(pwd)/workspace/${REPO_NAME}-2"
+    cd "workspace/${REPO_NAME}-2"
     git config init.defaultBranch "main"
     git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
     cd -

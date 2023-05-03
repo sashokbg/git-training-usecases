@@ -12,13 +12,14 @@ echo "content" > file1.txt
 git add .
 git commit -m "first commit"
 
-git checkout -b feat
+git branch feat
 
 echo "content2" > file2.txt
 git add .
 git commit -m "second commit"
 
-git push origin main
-git push origin feat
+git checkout feat
 
-git checkout main
+touch file2.txt
+
+git checkout main # <- this will result in an error

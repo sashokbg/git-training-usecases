@@ -25,6 +25,7 @@ git commit -m "third commit"
 git push origin main
 git push origin feat
 
+# Simulate "main" not being updated
 git reset HEAD~1 --hard
 
 git checkout feat

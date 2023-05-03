@@ -10,13 +10,13 @@ Each test case is associated with a POSIX shell script that prepares a local rep
 Normally you will do the following for most use-cases:
 
 1. Run the associate .sh script
-2. cd workspace/<use_case_name>.sh
+2. cd workspace/**<use_case_name>**
 3. Solve the problem using git commands
 
 Technical Notes:
 
-- Each script will clean the *workspace* and you will get a fresh start
-- A remote repository is configured in the *.git-repos* directory.
+- Each script will clean the **workspace** and you will get a fresh start
+- A remote repository is configured in the **.git-repos** directory.
 - Git "lg" alias is configured to use a pretty print git history. Usage: "git lg"
 - As a best practice and for security reasons you can the exercises in a docker image:
 
@@ -28,13 +28,14 @@ Technical Notes:
 
 ## Use Cases
 
-
 ### Use Case: Abort a merge
 I accidentally typed the ```git merge feat``` command and now I am prompted a message for the merge.
 I want to abort this merge.
 
-Traps:
-- If you close the file or save and close the merge will happen
+<details>
+    <summary>Traps:</summary>
+    - If you close the file or save and close the merge will happen
+</details>
 
 ### Use Case: Merge a feat into main with no merge commit 
 
@@ -105,7 +106,9 @@ Run: "quickly_change_branch.sh"
 
 ### Use Case: A non-tracked file is changed on another branch
 
-I encountered the following error
+I have a non-tracked file called file2.txt
+This file exists in the "main" branch
+When I try to checkout "main" I encountered the following error
 
 ````
 error: The following untracked working tree files would be overwritten by checkout:
@@ -116,29 +119,56 @@ Aborting
 
 Run: "non_tracked_file_checkout.sh"
 
-### Use Case: Check Stash Without Applying
+### Use Case: Revert a Rebase
 
-### Use Case: Conflict resolution
+I squashed some commits
+But have not yet pushed to origin
+I want to revert my squash
 
-### Use Case: Accidentally push force
+Run: "revert_squash.sh"
+
+### Use Case: Revert a Rebase That was Pushed
+
+I squashed some commits
+Then I pushed with --force
+I want to revert my squash
+
+Run: "revert_squash_pushed.sh"
 
 ### Use Case: Accidental merge from main
 
 I worked on a feature and I wanted to rebase upon main
 But instead I did a merge
 
+Run: "accidental_merge.sh"
+
+### Use Case: Check Stash Without Applying
+
+### Use Case: Conflict resolution
+
 ### Use Case: Split a commit
 
 I did one big commit that has too many changes
-I want to split it into two commits
+I want to split it into three commits "split: 1", "split:2" and "split: 3"
+
+Run: split_commit.sh
 
 ### Use Case: Branch merged upon itself
 
-Me and a colleague wor
+Me and a colleague worked on the same branch
+They commited a change on file1.txt
+I do a pull of the branch
+But and it generates a merge
 
-### Use Case: Multiple Origins
+Run: pull_generates_merge.sh
 
-I forked a repository
+### Use Case: Multiple Origins - Get Second Remote Main
+
+I forked a repository from a remote
+Someone has pushed some new code to the original remote in branch main
+I want to get the latest changes from the original remote
+
+Hint: Use the file:// protocol 
 
 ### Use Case: Take File Version from Another Branch
 

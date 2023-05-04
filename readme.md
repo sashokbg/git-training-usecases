@@ -145,8 +145,6 @@ But instead I did a merge
 
 Run: "accidental_merge.sh"
 
-### Use Case: Check Stash Without Applying
-
 ### Use Case: Rebase Conflict Resolution
 I edited the text1.txt file
 I want to rebase my feat branch onto main
@@ -216,3 +214,14 @@ I try to create a branch called "feat/my_feat"
 But it results in an error "refs/heads/my_feat" exists. Cannot create ...
 
 Run: checkout_error_ref_exists.sh
+
+### Use Case: I see the commits of my colleague in my PR
+
+TODO
+
+I did some wrong operation
+And now I see the commits of my colleague as part of my PR
+
+Run: foreign_commits_on_my_branch.sh
+
+

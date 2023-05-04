@@ -188,21 +188,27 @@ And I want to get the version of file "file1.txt" from the "feat/other" branch
 
 Run: take_file_another_branch.sh
 
-### Use Case: Preview Stash Without Applying It
+### Use Case: Preview my stash
+I have some files in my stash
+I want to see the state of "file1.txt" in my stash
 
-### Use Case: Compare File
-
-git diff feat/api_makefile -- package.json
+Run: stash_fun.sh
 
 ### Use Case: I want new GIT repo from current branch
 
 I want to transfer current branch to new GIT repository as a new project
 
-### Use Case: I want to ignore a file that is already commited
+### Use Case: I want to ignore a directory but something is off
 
 I want to ignore the dist directory
 
 Run: ignore_dist.sh
+
+### Use Case: I want to send a piece of code to another repo
+I work on a repository that uses the same code as another repo
+I want to send my last commit to a colleague that is working on the other repo
+
+Run: send_code_from_here.sh
 
 ### Use Case: Create a branch results in "refs/heads/..." exists
 

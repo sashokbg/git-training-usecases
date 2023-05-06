@@ -56,6 +56,13 @@ I want to "get" my colleague's code on my branch.
 
 Run: "get_most_recent_code_from_main.sh"
 
+### Use Case: Undoing a bad commit that is pushed
+
+I did a bad commit introducing a bug that got into production and is on "main"
+I want to quickly revert so that we can redeploy last version
+
+Run: "undo_pushed_commit.sh"
+
 ### Use Case: Detached Head
 
 I did a wrong checkout
@@ -216,8 +223,6 @@ But it results in an error "refs/heads/my_feat" exists. Cannot create ...
 Run: checkout_error_ref_exists.sh
 
 ### Use Case: I see the commits of my colleague in my PR
-
-TODO
 
 I did some wrong operation
 And now I see the commits of my colleague as part of my PR

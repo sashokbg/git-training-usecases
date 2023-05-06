@@ -20,9 +20,7 @@ touch file3.txt
 git add file3.txt
 git commit -m "third"
 
-echo 'echo "bad merged commit" >"$1-"' > fake_editor.sh
-echo 'mv "$1-" "$1"' >> fake_editor.sh
-chmod +x fake_editor.sh
+fakeeditor "bad merge commit"
 
 GIT_SEQUENCE_EDITOR="sed -i '2s/^pick/squash/g'" \
   GIT_EDITOR="./fake_editor.sh" \

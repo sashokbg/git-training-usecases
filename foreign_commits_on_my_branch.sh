@@ -27,9 +27,7 @@ git commit -m "first commit"
 
 git merge feat/2 -m "Merge branch feeat/2 into feat/1"
 
-echo 'sed -e "s/commit/commit (edited)/g" <"$1" >"$1-"' > fake_editor.sh
-echo 'mv "$1-" "$1"' >> fake_editor.sh
-chmod +x fake_editor.sh
+sed_fakeeditor "s/commit/commit (edited)/g"
 
 GIT_EDITOR="./fake_editor.sh" \
   GIT_SEQUENCE_EDITOR="sed -i '1s/^pick/r/g'" \

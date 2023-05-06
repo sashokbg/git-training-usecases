@@ -1,3 +1,16 @@
+function sed_fakeeditor() {
+  editor_command=$1
+  echo "sed -e \"$editor_command\" < \"\$1\" > \"\$1-\"" >> fake_editor.sh
+  echo 'mv "$1-" "$1"' >> fake_editor.sh
+  chmod +x fake_editor.sh
+}
+
+function fakeeditor() {
+  echo "echo \"$1\" > \"\$1-\"" >> fake_editor.sh
+  echo 'mv "$1-" "$1"' >> fake_editor.sh
+  chmod +x fake_editor.sh
+}
+
 function aliases() {
   git config alias.s "status"
   git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
@@ -43,6 +56,8 @@ function init_repo() {
     cd "workspace/${_REPO_NAME}-2"
     git config init.defaultBranch "main"
     aliases
+    git config user.email "git-master@git-exercises.com"
+    git config user.name "Tim Who Eats Your Sandwich"
     cd -
   fi
 }

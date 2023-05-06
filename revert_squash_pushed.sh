@@ -1,27 +1,7 @@
 # !/bin/sh
 
 set -e
-source "./_init_repo.sh"
-
-REPO_NAME="$(basename $0 '.sh')"
-
-init_repo $REPO_NAME
-cd workspace/$REPO_NAME
-
-touch file1.txt
-git add file1.txt
-git commit -m "first"
-
-touch file2.txt
-git add file2.txt
-git commit -m "second"
-
-touch file3.txt
-git add file3.txt
-git commit -m "third"
-
-GIT_SEQUENCE_EDITOR="sed -i '2s/^pick/squash/g'" \
-  git rebase -i HEAD~2 
+source "./revert_squash.sh"
 
 git push origin main --force
 

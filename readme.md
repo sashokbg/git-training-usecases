@@ -163,7 +163,7 @@ Run: rebase_conflict.sh
 ### Use Case: Split a commit
 
 I did one big commit that has too many changes
-I want to split it into three commits "split: 1", "split:2" and "split: 3"
+I want to split it into three commits "split: 1", "split: 2" and "split: 3"
 
 Run: split_commit.sh
 

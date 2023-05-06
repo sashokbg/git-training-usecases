@@ -19,12 +19,13 @@ Technical Notes:
 - A remote repository is configured in the **.git-repos** directory by using the file:// protocol. This means that "git remote -v" will output something like **/home/alexander/git-training-usecases/.git-repos/<repo>**.
 - If you don't have global username and email configured default values will be put for you in the workspace repos.
 - Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
-- As a best practice and for security reasons you can the exercises in a docker image:
+- As a best practice and for security reasons you can run the exercises in a docker image:
     ```
     docker run -ti --rm -v $(pwd):/git --entrypoint /bin/sh alpine/git
     ```
+- Note that after running with docker you may need to manually clean the workspace and .git-repos directories with "sudo".
 
-- Note that after running you may need to manually clean the workspace and .git-repos directories with "sudo".
+- Some test cases run interactive rebases and generate a "fake_editor.sh" script that simulates the user input. This works using the GIT_EDITOR and GIT_SEQUENCE_EDITOR env variables.
 
 ## Use Cases
 

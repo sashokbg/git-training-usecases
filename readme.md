@@ -1,4 +1,4 @@
-# Git Exercises
+# Git Training Use Cases
 
 This repository is a list of git usecases that are commonly encountered during devleopment.
 Its primary goal is to show you how you can get into a delicate situation and train you how to solve it.

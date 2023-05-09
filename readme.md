@@ -13,7 +13,7 @@ Normally you will do the following for most use-cases:
 2. cd workspace/**<use_case_name>**
 3. Solve the problem using git commands
 
-Technical Notes:
+## Technical Notes
 
 - Each script will clean the **workspace** and you will get a fresh start
 - A remote repository is configured in the **.git-repos** directory by using the file:// protocol. This means that "git remote -v" will output something like **/home/alexander/git-training-usecases/.git-repos/<repo>**.
@@ -26,6 +26,12 @@ Technical Notes:
 - Note that after running with docker you may need to manually clean the workspace and .git-repos directories with "sudo".
 
 - Some test cases run interactive rebases and generate a "fake_editor.sh" script that simulates the user input. This works using the GIT_EDITOR and GIT_SEQUENCE_EDITOR env variables.
+
+## TODO
+
+- [ ] Add assertion shells scripts for all use cases to validate the solution 
+- [ ] Add git snensitive shell PS1 for the docker image
+- [ ] Add collapsible hints and explanations for each case
 
 ## Use Cases
 

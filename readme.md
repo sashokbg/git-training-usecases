@@ -21,7 +21,7 @@ Normally you will do the following for most use-cases:
 - Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
 - As a best practice and for security reasons you can run the exercises in a docker image:
     ```
-    docker run -ti --rm -v $(pwd):/git --entrypoint /bin/sh alpine/git
+    docker run --rm --name git-exercises -v $(pwd):/git -it sashokbg/git-exercises /bin/zsh
     ```
 - Note that after running with docker you may need to manually clean the workspace and .git-repos directories with "sudo".
 

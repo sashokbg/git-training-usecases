@@ -23,6 +23,7 @@ function init_repo() {
     echo "No email config detected - initializing"
     git config --global user.email "git-master@git-exercises.com"
     git config --global user.name "Git Master"
+    git config --global core.editor vim
   fi
 
   _REPO_NAME=$1

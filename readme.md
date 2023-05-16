@@ -85,7 +85,18 @@ Run:
 ./undo_pushed_commit.sh
 cd workspace/undo_pushed_commit
 ```
+	
+### Use Case: Undoing a range of pushed bad commit
 
+I did a 3 bad commits introducing a bug that got into production and is on "main"
+I want to quickly revert them.
+
+Run:
+```
+./undo_pushed_range_commit.sh
+cd workspace/undo_pushed_range_commit
+```
+	
 ### Use Case: Detached Head
 
 I did a wrong checkout

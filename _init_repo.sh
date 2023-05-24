@@ -46,7 +46,7 @@ function init_repo() {
 
   cd "workspace/$_REPO_NAME"
   git config init.defaultBranch "main"
-  git commit -m "init" --allow-empty
+  git commit -m "init $_REPO_NAME" --allow-empty
   git push origin main
   aliases
   cd -

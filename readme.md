@@ -30,7 +30,7 @@ Normally you will do the following for most use-cases:
 ## TODO
 
 - [ ] Add assertion shells scripts for all use cases to validate the solution 
-- [ ] Add git snensitive shell PS1 for the docker image
+- [x] Add git snensitive shell PS1 for the docker image
 - [ ] Add collapsible hints and explanations for each case
 
 ## Use Cases
@@ -93,7 +93,7 @@ I want to quickly revert them.
 
 Run:
 ```
-./undo_pushed_range_commit.sh
+./undo_pushed_range_commits.sh
 cd workspace/undo_pushed_range_commit
 ```
 	
@@ -342,4 +342,26 @@ Run:
 ./foreign_commits_on_my_branch.sh
 cd workspace/foreign_commits_on_my_branch
 ```
+
+### Use Case: Pulling from another repository fails
+
+A colleague works on another repository that is not related to mine and have pushed a commit called "other commit".
+I want to get the content of their commit on my repo.
+
+I added the second repository as a remote and pulled
+
+And I receive the following error when trying merge
+
+````
+fatal: refusing to merge unrelated histories
+````
+
+Run:
+```
+./cannot_merge_unreleated_history.sh
+cd workspace/cannot_merge_unreleated_history.sh
+```
+
+### Use Case: I need to generate a report with commits from a branch
+
 

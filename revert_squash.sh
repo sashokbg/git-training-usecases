@@ -22,7 +22,7 @@ git commit -m "third"
 
 fakeeditor "bad merge commit"
 
-GIT_SEQUENCE_EDITOR="sed -i '2s/^pick/squash/g'" \
+GIT_SEQUENCE_EDITOR="sed -i '' '2s/^pick/squash/g'" \
   GIT_EDITOR="./fake_editor.sh" \
   git rebase -i HEAD~2
 

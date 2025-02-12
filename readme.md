@@ -84,7 +84,7 @@ I want to quickly revert so that we can redeploy last version
 
 Run:
 ```shell
-. ./undo_pushed_commit.sh
+. ./undoing_pushed_commit.sh
 ```
 	
 ### Use Case: Undoing a range of pushed bad commit

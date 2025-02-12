@@ -1,7 +1,7 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
 
 REPO_NAME="$(basename $0 '.sh')"
 OTHER_NAME="send_code_here"

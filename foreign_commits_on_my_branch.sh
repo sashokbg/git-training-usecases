@@ -1,7 +1,7 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
 
 REPO_NAME="$(basename $0 '.sh')"
 
@@ -31,5 +31,5 @@ sed_fakeeditor "s/commit/commit (edited)/g"
 
 GIT_EDITOR="./fake_editor.sh" \
   GIT_SEQUENCE_EDITOR="sed -i '1s/^pick/r/g'" \
-  git rebase -i HEAD~2 
+  git rebase -i HEAD~2
 

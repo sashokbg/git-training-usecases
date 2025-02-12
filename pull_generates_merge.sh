@@ -1,7 +1,7 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
 
 REPO_NAME="$(basename $0 '.sh')"
 
@@ -30,4 +30,4 @@ git commit -m "first commit"
 
 set +e
 git push origin feat
-git pull origin feat 
+git pull origin feat

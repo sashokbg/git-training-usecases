@@ -1,7 +1,16 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
+
+echo "*********************"
+echo "I accidentally did a merge"
+echo "Now I need to get rid of it"
+echo ""
+echo "Continue ?"
+echo "*********************"
+
+read read_var
 
 REPO_NAME="$(basename $0 '.sh')"
 

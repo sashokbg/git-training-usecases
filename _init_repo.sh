@@ -13,11 +13,11 @@ function fakeeditor() {
 
 function aliases() {
   git config alias.s "status"
-  git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all" 
+  git config alias.lg "log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all"
 }
 
 function init_repo() {
-  set -e
+
 
   if ! git config --list | grep email; then
     echo "No email config detected - initializing"

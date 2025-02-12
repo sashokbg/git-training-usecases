@@ -1,7 +1,7 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
 
 REPO_NAME="$(basename $0 '.sh')"
 
@@ -24,6 +24,6 @@ fakeeditor "bad merge commit"
 
 GIT_SEQUENCE_EDITOR="sed -i '2s/^pick/squash/g'" \
   GIT_EDITOR="./fake_editor.sh" \
-  git rebase -i HEAD~2 
+  git rebase -i HEAD~2
 
 

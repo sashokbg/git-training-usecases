@@ -3,6 +3,11 @@
 This repository is a list of git usecases that are commonly encountered during devleopment.
 Its primary goal is to show you how you can get into a delicate situation and train you how to solve it.
 
+Recommended video:
+
+https://www.youtube.com/watch?v=MyvyqdQ3OjI
+
+
 ## Usage
 
 Each test case is associated with a POSIX shell script that prepares a local repository located in the **workspace** directory.
@@ -30,7 +35,7 @@ Normally you will do the following for most use-cases:
 ## TODO
 
 - [ ] Add assertion shells scripts for all use cases to validate the solution 
-- [x] Add git snensitive shell PS1 for the docker image
+- [x] Add git sensitive shell PS1 for the docker image
 - [ ] Add collapsible hints and explanations for each case
 
 ## Use Cases
@@ -45,9 +50,8 @@ I want to abort this merge.
 </details>
 
 Run:
-```
-./abort_a_merge.sh
-cd workspace/abort_a_merge
+```shell
+. ./abort_a_merge.sh
 ```
 
 ### Use Case: Merge a feat into main with no merge commit 
@@ -58,9 +62,8 @@ But I do not want to generate a merge commit
 In order to keep history clean and linear
 
 Run:
-```
-./no_merge_to_main.sh
-cd workspace/no_merge_to_main
+```shell
+. ./no_merge_to_main.sh
 ```
 
 ### Use Case: Get Most Recent Code from Main
@@ -70,9 +73,8 @@ And a colleague of mine did a fix that is on "main" branch
 I want to "get" my colleague's code on my branch.
 
 Run:
-```
-./get_most_recent_code_from_main.sh
-cd workspace/get_most_recent_code_from_main
+```shell
+. ./get_most_recent_code_from_main.sh
 ```
 
 ### Use Case: Undoing a bad commit that is pushed
@@ -81,20 +83,18 @@ I did a bad commit introducing a bug that got into production and is on "main"
 I want to quickly revert so that we can redeploy last version
 
 Run:
-```
-./undo_pushed_commit.sh
-cd workspace/undo_pushed_commit
+```shell
+. ./undo_pushed_commit.sh
 ```
 	
 ### Use Case: Undoing a range of pushed bad commit
 
-I did a 3 bad commits introducing a bug that got into production and is on "main"
+I did 3 bad commits introducing a bug that got into production and is on "main"
 I want to quickly revert them.
 
 Run:
-```
-./undo_pushed_range_commits.sh
-cd workspace/undo_pushed_range_commit
+```shell
+. ./undo_pushed_range_commits.sh
 ```
 	
 ### Use Case: Detached Head
@@ -103,21 +103,20 @@ I did a wrong checkout
 And now my HEAD is in "detached" state
 
 Run:
-```
-./detached_head.sh
-cd workspace/detached_head
+```shell
+. ./detached_head.sh
 ```
 
 ### Use Case: Redo last commit
-I did a commit but I want to add some files to it.
+I did a commit, but I want to add some files to it.
 I want to push my code to the remote
 
 Run:
-```
-./redo_last_commit.sh
-cd workspace/redo_last_commit
+```shell
+. ./redo_last_commit.sh
 ```
 
+Do not forget to push your code to the remote.
 Attention trap ahead !
 
 ### Use Case: Clean a WIP commit 
@@ -134,9 +133,8 @@ Solve for:
 - I want to fuse the wip commit with the next commit
 
 Run:
-```
-./clean_wip_commit.sh
-cd workspace/clean_wip_commit
+```shell
+. ./clean_wip_commit.sh
 ```
 
 ### Use Case: Too many commits
@@ -145,9 +143,8 @@ I worked on a feature and did too many commits
 I wish to fuse them together before opening a merge request.
 
 Run:
-```
-./too_many_commits.sh
-cd workspace/too_many_commits
+```shell
+. ./too_many_commits.sh
 ```
 
 ### Use Case: Edit a previous commit (not last)
@@ -156,9 +153,8 @@ I did two commits: one for backend and then one for frontend
 But I forgot to add one file in the backend commit
 
 Run:
-```
-./edit_second_to_last_commit.sh
-cd workspace/edit_second_to_last_commit
+```shell
+. ./edit_second_to_last_commit.sh
 ```
 
 ### Use Case: Quickly change branch
@@ -167,9 +163,8 @@ I am working on a feature and have not yet commited
 But I need to quickly change branch to main to fix an urgent issue.
 
 Run:
-```
-./quickly_change_branch.sh
-cd workspace/quickly_change_branch
+```shell
+. ./quickly_change_branch.sh
 ```
 
 ### Use Case: A non-tracked file is changed on another branch
@@ -186,9 +181,8 @@ Aborting
 ````
 
 Run:
-```
-./non_tracked_file_checkout.sh
-cd workspace/non_tracked_file_checkout
+```shell
+. ./non_tracked_file_checkout.sh
 ```
 
 ### Use Case: Revert a Rebase
@@ -198,9 +192,8 @@ But have not yet pushed to origin
 I want to revert my squash
 
 Run:
-```
-./revert_squash.sh
-cd workspace/revert_squash
+```shell
+. ./revert_squash.sh
 ```
 
 ### Use Case: Revert a Rebase That was Pushed
@@ -210,20 +203,19 @@ Then I pushed with --force
 I want to revert my squash
 
 Run:
-```
-./revert_squash_pushed.sh
-cd workspace/revert_squash_pushed
+```shell
+. ./revert_squash_pushed.sh
 ```
 
 ### Use Case: Accidental merge from main
 
 I worked on a feature and I wanted to rebase upon main
+
 But instead I did a merge
 
 Run:
-```
-./accidental_merge.sh
-cd workspace/accidental_merge
+```shell
+. ./accidental_merge.sh
 ```
 
 ### Use Case: Rebase Conflict Resolution
@@ -232,9 +224,8 @@ I want to rebase my feat branch onto main
 But another user edited the same file on main
 
 Run:
-```
-./rebase_conflict.sh
-cd workspace/rebase_conflict
+```shell
+. ./rebase_conflict.sh
 ```
 
 ### Use Case: Split a commit
@@ -243,22 +234,20 @@ I did one big commit that has too many changes
 I want to split it into three commits "split: 1", "split: 2" and "split: 3"
 
 Run:
-```
-./split_commit.sh
-cd workspace/split_commit
+```shell
+. ./split_commit.sh
 ```
 
 ### Use Case: Branch merged upon itself
 
-Me and a colleague worked on the same branch
+Me, and a colleague worked on the same branch
 They commited a change on file1.txt
 I do a pull of the branch
-But and it generates a merge
+But it generates a merge
 
 Run:
-```
-./pull_generates_merge.sh
-cd workspace/pull_generates_merge
+```shell
+. ./pull_generates_merge.sh
 ```
 
 ### Use Case: Multiple Origins - Get Second Remote Main
@@ -271,9 +260,8 @@ I want to get the latest changes from the original remote
 Hint: Use the file:// protocol for the second remote and point at <path-to-repo>/.git-repos/multiple_remotes_get_main-upstream.git
 
 Run:
-```
-./multiple_remotes_update_main.sh
-cd workspace/multiple_remotes_update_main
+```shell
+. ./multiple_remotes_update_main.sh
 ```
 
 ### Use Case: Take File Version from Another Branch
@@ -282,9 +270,8 @@ I am working on a branch feat
 And I want to get the version of file "file1.txt" from the "feat/other" branch
 
 Run:
-```
-./take_file_another_branch.sh
-cd workspace/take_file_another_branch
+```shell
+. ./take_file_another_branch.sh
 ```
 
 ### Use Case: Preview my stash
@@ -292,9 +279,8 @@ I have some files in my stash
 I want to see the state of "file1.txt" in my stash
 
 Run:
-```
-./stash_fun.sh
-cd workspace/stash_fun
+```shell
+. ./stash_fun.sh
 ```
 
 ### Use Case: I want new GIT repo from current branch
@@ -306,9 +292,8 @@ I want to transfer current branch to new GIT repository as a new project
 I want to ignore the dist directory
 
 Run:
-```
-./ignore_dist.sh
-cd workspace/ignore_dist
+```shell
+. ./ignore_dist.sh
 ```
 
 ### Use Case: I want to send a piece of code to another repo
@@ -316,9 +301,8 @@ I work on a repository that uses the same code as another repo
 I want to send my last commit to a colleague that is working on the other repo
 
 Run:
-```
-./send_code_from_here.sh
-cd workspace/send_code_from_here
+```shell
+. ./send_code_from_here.sh
 ```
 
 ### Use Case: Create a branch results in "refs/heads/..." exists
@@ -327,9 +311,8 @@ I try to create a branch called "feat/my_feat"
 But it results in an error "refs/heads/my_feat" exists. Cannot create ...
 
 Run:
-```
-./checkout_error_ref_exists.sh
-cd workspace/checkout_error_ref_exists
+```shell
+. ./checkout_error_ref_exists.sh
 ```
 
 ### Use Case: I see the commits of my colleague in my PR
@@ -338,9 +321,8 @@ I did some wrong operation
 And now I see the commits of my colleague as part of my PR
 
 Run:
-```
-./foreign_commits_on_my_branch.sh
-cd workspace/foreign_commits_on_my_branch
+```shell
+. ./foreign_commits_on_my_branch.sh
 ```
 
 ### Use Case: Pulling from another repository fails
@@ -357,11 +339,44 @@ fatal: refusing to merge unrelated histories
 ````
 
 Run:
+```shell
+. ./cannot_merge_unreleated_history.sh
 ```
-./cannot_merge_unreleated_history.sh
-cd workspace/cannot_merge_unreleated_history.sh
+
+### Use Case: Edit a Hunk
+I fixed two bugs that required editing the same file.
+I want to split it into two different commits.
+However, when I perform "git add -p" the two changes are added together.
+
+Run:
+```shell
+. ./edit_hunk.sh
 ```
 
 ### Use Case: I need to generate a report with commits from a branch
+
+### Use Case: I want to completely replace a branch with another branch's history
+
+### Use Case: Merge another repository in my repository
+
+Run:
+```shell
+. ./merge_another_repo.sh
+```
+
+### Use Case: Migrate a part of a monorepo to a new repo, keeping history
+
+Run:
+```shell
+./merge_
+```
+
+## Use Case: Bad file During an Interactive git rebase 
+
+git rebase --edit-todo
+
+## Ambiguous REF
+
+create a local branch that is named origin/develop
 
 

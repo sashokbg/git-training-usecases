@@ -1,7 +1,7 @@
-# !/bin/sh
+#!/bin/sh
 
-set -e
-source "./_init_repo.sh"
+
+. "./_init_repo.sh"
 
 REPO_NAME="get_most_recent_code_from_main"
 

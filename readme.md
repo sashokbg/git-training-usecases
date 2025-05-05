@@ -379,4 +379,10 @@ git rebase --edit-todo
 
 create a local branch that is named origin/develop
 
+## Use Case: Committed a Password
+
+I have accidentally committed a password in a readme.md file.
+I want to make absolutely sure that the password cannot be recovered in the git history.
+
+
 

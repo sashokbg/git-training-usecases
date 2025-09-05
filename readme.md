@@ -385,4 +385,10 @@ I have accidentally committed a password in a readme.md file.
 I want to make absolutely sure that the password cannot be recovered in the git history.
 
 
+## Use Case: Merge Multi Repos Into Monorepo
 
+I have one repository called "monorepo" and another called "backend".
+I want to merge the "main" branch of "backend" into the repository "monorepo" as a sub-directory called ./backend
+The commit history of the other repo needs to be preserved
+
+SOLUTION: git subtree add --prefix=backend backend main

@@ -1,26 +1,60 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
+import {questions} from './questions.db';
+import { ShellLoginService } from './services/shellinabox.service';
+
+// Import the questions database
 
 function App() {
-    const [sessionStatus, setSessionStatus] = useState('???');
-    const [inputValue, setInputValue] = useState('');
     const [output, setOutput] = useState('');
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [hintsExpanded, setHintsExpanded] = useState(false);
+    const [sessionStatus, setSessionStatus] = useState(null);
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [questionStarted, setQuestionStarted] = useState(false);
+    const [loginInProgress, setLoginInProgress] = useState(false);
 
     const iframeRef = useRef(null);
     const outputRef = useRef(null);
+    const loginServiceRef = useRef(null);
 
-    // Shellinabox URL
     const url = "http://localhost:5173/shell";
+    const currentQuestion = questions[currentQuestionIndex];
+
+    // Initialize login service
+    useEffect(() => {
+        loginServiceRef.current = new ShellLoginService(iframeRef, url, 1); // 1 retry
+
+        return () => {
+            if (loginServiceRef.current) {
+                loginServiceRef.current.cleanup();
+            }
+        };
+    }, [url]);
+
+    function handleLoginResult(success) {
+        setLoginInProgress(false);
+        setIsLoggedIn(success);
+
+        if (!success) {
+            console.error('Login failed after all retry attempts');
+            // You might want to show an error message to the user here
+        }
+    }
+
+    function startLoginProcess() {
+        setLoginInProgress(true);
+        setIsLoggedIn(false);
+        if (loginServiceRef.current) {
+            loginServiceRef.current.startLogin(handleLoginResult);
+        }
+    }
 
     useEffect(() => {
-        // Message event listener
         const handleMessage = (message) => {
-            // Allow messages only from shellinabox
-            // console.log("handleMessage", message);
-            // if (new URL(message.origin).host !== new URL(url).host) {
-            //     console.error("Message origin not allowed:", message.origin);
-            //     return;
-            // }
+            if (new URL(message.origin).host !== new URL(url).host) {
+                return;
+            }
 
             // Handle response according to response type
             const decoded = JSON.parse(message.data);
@@ -33,10 +67,17 @@ function App() {
                         data: 'enable'
                     });
                     iframeRef.current.contentWindow.postMessage(readyMessage, url);
+                    // Start login process after shell is ready
+                    startLoginProcess();
                     break;
                 case "output":
                     // Append new output
                     setOutput(prev => prev + decoded.data);
+
+                    // Process output through login service for login detection
+                    if (loginServiceRef.current) {
+                        loginServiceRef.current.processOutput(decoded.data);
+                    }
                     break;
                 case "session":
                     // Reload session status
@@ -45,7 +86,6 @@ function App() {
             }
         };
 
-        console.log("Adding event listener");
         window.addEventListener("message", handleMessage);
 
         return () => {
@@ -61,83 +101,182 @@ function App() {
         }
     }, [output]);
 
+    // Load question only when started
+    useEffect(() => {
+        if (isLoggedIn && questionStarted) {
+            if (iframeRef.current && currentQuestion) {
+                setTimeout(() => {
+                    loadQuestion(currentQuestion);
+                }, 500);
+            }
+        }
+    }, [isLoggedIn, questionStarted]);
+
     const sendMessage = (type, data = null) => {
         const message = JSON.stringify({type, data});
         if (iframeRef.current && iframeRef.current.contentWindow) {
-            console.log("sendMessage", message);
             iframeRef.current.contentWindow.postMessage(message, url);
         }
     };
 
-    const handleExecute = () => {
-        console.log("handleExecute");
-        sendMessage('input', inputValue + '\n');
-        setInputValue(''); // Clear input after execution
+    const loadQuestion = (question) => {
+        // Clear previous output
+        setOutput('');
+
+        // Send command to load the question script
+        sendMessage('input', `source ${question.script}\n`);
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
-            handleExecute();
+    const handleQuestionSelect = (index) => {
+        setCurrentQuestionIndex(index);
+        setHintsExpanded(false);
+        setQuestionStarted(false);
+    };
+
+    const handleStartQuestion = () => {
+        setQuestionStarted(true);
+        setIsLoggedIn(false);
+        setLoginInProgress(false);
+
+        // Reset login service state
+        if (loginServiceRef.current) {
+            loginServiceRef.current.reset();
         }
+
+        if (iframeRef.current) {
+            iframeRef.current.contentWindow.location.reload();
+        }
+    }
+
+    const handleSubmit = () => {
+        // Here you could implement submission logic
+        // For now, just log the current question
+        console.log('Submitting question:', currentQuestion.title);
+
+        // You might want to validate the solution or move to next question
+        alert('Solution submitted! Check the terminal output to verify your answer.');
     };
 
-    const handleOutputEnable = () => {
-        sendMessage('output', 'enable');
-    };
-
-    const handleOutputDisable = () => {
-        sendMessage('output', 'disable');
-        setOutput(''); // Clear output window
-    };
-
-    const handleSessionReload = () => {
-        sendMessage('session');
-    };
-
-    const handleSessionToggle = () => {
-        sendMessage('onsessionchange', 'toggle');
-    };
-
-    const handleReconnect = () => {
-        sendMessage('reconnect');
+    const toggleHints = () => {
+        setHintsExpanded(!hintsExpanded);
     };
 
     return (
         <div className="app">
-            <h3>Embedded Shell In A Box example page.</h3>
-
-            <div className="controls">
-                <p>Controls:</p>
-                <div className="control-buttons">
-                    <input
-                        type="text"
-                        value={inputValue}
-                        onChange={(e) => setInputValue(e.target.value)}
-                        onKeyPress={handleKeyPress}
-                        placeholder="Enter command..."
-                    />
-                    <button onClick={handleExecute}>Execute</button>
-                    <button onClick={handleOutputEnable}>Output Enable</button>
-                    <button onClick={handleOutputDisable}>Output Disable</button>
-                    <button onClick={handleReconnect}>Reconnect</button>
-                    <button onClick={handleSessionReload}>Session Status</button>
-                    <button onClick={handleSessionToggle}>Session Status Toggle</button>
-                </div>
+            {/* Login Status Indicator */}
+            <div className={`login-status-indicator ${isLoggedIn ? 'logged-in' : loginInProgress ? 'logging-in' : 'logged-out'}`}>
+                <span className="status-icon">
+                    {isLoggedIn ? '✅' : loginInProgress ? '🔄' : '❌'}
+                </span>
+                <span className="status-text">
+                    {isLoggedIn ? 'Shell Initialized' : loginInProgress ? 'Shell Initializing...' : 'Shell not Initialized'}
+                </span>
             </div>
 
-            <p className="session-status">Session status: {sessionStatus}</p>
+            <div className="sidebar">
+                <h3 className="sidebar-title">Git Exercises</h3>
+                {questions.map((question, index) => (
+                    <div
+                        key={index}
+                        className={`sidebar-item ${index === currentQuestionIndex ? 'active' : ''}`}
+                        onClick={() => handleQuestionSelect(index)}
+                    >
+                        <span className="question-number">{index + 1}.</span>
+                        <span className="question-title-short">{question.title}</span>
+                    </div>
+                ))}
+            </div>
+            <div className="question-content">
+                <header className="content-header">
+                    <h1>Git Exercise</h1>
+                    <p className="exercise-subtitle">Practice your Git skills with interactive exercises</p>
+                </header>
 
-            <iframe
-                ref={iframeRef}
-                id="shell"
-                src={url}
-                className="shell-iframe"
-                title="Shell In A Box Terminal"
-            />
+                <h2 className="question-title">{currentQuestion.title}</h2>
 
-            <div className="output-section">
-                <p>Terminal output:</p>
-                <pre ref={outputRef} className="output">{output}</pre>
+                <div className="question-description">
+                    <p>{currentQuestion.description}</p>
+
+                    {currentQuestion.command_history && currentQuestion.command_history.length > 0 && (
+                        <div className="command-history">
+                            <h4>Command History:</h4>
+                            <ul>
+                                {currentQuestion.command_history.map((command, index) => (
+                                    <li key={index}><code>{command}</code></li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                </div>
+
+                {!questionStarted && (
+                    <div className="question-start">
+                        <button className="start-button" onClick={handleStartQuestion}>
+                            Start
+                        </button>
+                    </div>
+                )}
+
+                {questionStarted && (
+                    <div className="question-content-workspace">
+                        {loginInProgress && (
+                            <div className="login-status">
+                                <p>🔄 Logging in to shell...</p>
+                            </div>
+                        )}
+
+                        {!isLoggedIn && !loginInProgress && (
+                            <div className="login-status error">
+                                <p>❌ Failed to login to shell after retries. Please try restarting the exercise.</p>
+                            </div>
+                        )}
+
+                        <iframe
+                            ref={iframeRef}
+                            id="shell"
+                            src={url}
+                            className="shell-iframe"
+                            title="Shell In A Box Terminal"
+                        />
+                    </div>
+                )}
+
+                {currentQuestion.hints && currentQuestion.hints.length > 0 && (
+                    <div className="question-hints collapsible">
+                        <button
+                            className="hints-toggle"
+                            onClick={toggleHints}
+                        >
+                            {hintsExpanded ? '▼' : '▶'} Hints ({currentQuestion.hints.length})
+                        </button>
+
+                        {hintsExpanded && (
+                            <div className="hints-content">
+                                {currentQuestion.hints.map((hint, index) => (
+                                    <div key={index} className="hint">
+                                        <span className="hint-number">{index + 1}.</span>
+                                        <span className="hint-text">{hint}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                )}
+
+                {questionStarted && (
+                    <div className="question-actions">
+                        <button className="submit-button" onClick={handleSubmit}>
+                            Submit Solution
+                        </button>
+
+                        {currentQuestion.expected && (
+                            <div className="expected-outcome">
+                                <h4>Expected Outcome:</h4>
+                                <p>{currentQuestion.expected}</p>
+                            </div>
+                        )}
+                    </div>
+                )}
             </div>
         </div>
     );

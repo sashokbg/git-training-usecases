@@ -1,0 +1,35 @@
+services:
+  git-exercises:
+#    image: docker.io/sashokbg/git-exercises
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "4200:4200"
+    volumes:
+      - home_dir:/home/learn-git
+    environment:
+      - SIAB_PASSWORD=learn-git
+      - SIAB_USER=learn-git
+      - SIAB_USERID=1001
+      - SIAB_GROUPID=1001
+      - SIAB_SERVICE=/admin:AUTH:/:/bin/zsh /:AUTH:/git:/bin/zsh /ls:nobody:nogroup:/tmp:/bin/ls -al
+      - SIAB_SHELL=/bin/zsh
+      - SIAB_SSL=false
+      - SIAB_PORT=4200
+      - SIAB_ORIGIN=http://localhost:5173
+    command: shellinabox
+
+  files_service:
+    image: node:22-alpine
+    volumes:
+      - home_dir:/home/learn-git
+      - ./file_server:/app
+    ports:
+      - 3000:3000
+    command:
+      - node
+      - /app/index.js
+
+volumes:
+  home_dir:

@@ -2,13 +2,13 @@ import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
 import {questions} from './questions.db';
 import { ShellLoginService } from './services/shellinabox.service';
+import HintsComponent from './hints.component';
 
 // Import the questions database
 
 function App() {
     const [output, setOutput] = useState('');
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [hintsExpanded, setHintsExpanded] = useState(false);
     const [sessionStatus, setSessionStatus] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [questionStarted, setQuestionStarted] = useState(false);
@@ -129,8 +129,16 @@ function App() {
 
     const handleQuestionSelect = (index) => {
         setCurrentQuestionIndex(index);
-        setHintsExpanded(false);
         setQuestionStarted(false);
+
+        // Reset login status when changing exercises
+        setIsLoggedIn(false);
+        setLoginInProgress(false);
+
+        // Reset login service state
+        if (loginServiceRef.current) {
+            loginServiceRef.current.reset();
+        }
     };
 
     const handleStartQuestion = () => {
@@ -241,27 +249,11 @@ function App() {
                     </div>
                 )}
 
-                {currentQuestion.hints && currentQuestion.hints.length > 0 && (
-                    <div className="question-hints collapsible">
-                        <button
-                            className="hints-toggle"
-                            onClick={toggleHints}
-                        >
-                            {hintsExpanded ? '▼' : '▶'} Hints ({currentQuestion.hints.length})
-                        </button>
-
-                        {hintsExpanded && (
-                            <div className="hints-content">
-                                {currentQuestion.hints.map((hint, index) => (
-                                    <div key={index} className="hint">
-                                        <span className="hint-number">{index + 1}.</span>
-                                        <span className="hint-text">{hint}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                )}
+                {/* Use the new HintsComponent */}
+                <HintsComponent
+                    questionTitle={currentQuestion.title}
+                    hints={currentQuestion.hints}
+                />
 
                 {questionStarted && (
                     <div className="question-actions">

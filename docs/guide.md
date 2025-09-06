@@ -1,12 +1,15 @@
 # Git Exercises Guide
 
-## How it works
+## Loading an exercise
 
-The web version of this exercise works by hosting a shellinabox instance locally and connecting to via a React app.
+## Changing exercise
 
-You can see the list of exercises in the sidebar.
+## Shell Login
 
-Selecting an exercise will load it into the main section of the page. \
-Behind the scenes a message is sent to the shellinabox instance to load the appropriate exercise by sourcing the related script file.
+## Hints
 
-The list of questions is loaded from a js file called `questions.db.js`.
+Some exercises can comprise hints. Hints are shown one-at-a-time.
+
+You can also reset hints for your exercise.
+
+The program will remember what hints you have seen.

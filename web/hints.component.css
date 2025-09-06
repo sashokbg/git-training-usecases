@@ -1,0 +1,239 @@
+.hints-component {
+    margin-top: 1.5rem;
+    border: 1px solid #e1e5e9;
+    border-radius: 8px;
+    background: #f8f9fa;
+    overflow: hidden;
+}
+
+.hints-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0;
+}
+
+.hints-toggle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: left;
+    transition: background-color 0.2s ease;
+}
+
+.hints-toggle:hover {
+    background-color: #e9ecef;
+}
+
+.toggle-icon {
+    font-size: 0.8rem;
+    color: #6c757d;
+    transition: transform 0.2s ease;
+}
+
+.hints-title {
+    color: #495057;
+}
+
+.hints-counter {
+    color: #6c757d;
+    font-weight: 500;
+    margin-left: 0.25rem;
+}
+
+.reset-hints-btn {
+    padding: 0.5rem 1rem;
+    margin-right: 1rem;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color 0.2s ease;
+}
+
+.reset-hints-btn:hover {
+    background: #c82333;
+}
+
+.hints-content {
+    border-top: 1px solid #e1e5e9;
+    background: white;
+}
+
+.hints-intro {
+    padding: 1rem;
+    text-align: center;
+    color: #6c757d;
+    font-style: italic;
+}
+
+.hints-intro p {
+    margin: 0;
+}
+
+.seen-hints {
+    padding: 1rem;
+    padding-bottom: 0;
+}
+
+.hint {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background: #f8f9fa;
+    border: 1px solid #e9ecef;
+    border-radius: 6px;
+    position: relative;
+}
+
+.hint-seen {
+    background: #e8f5e8;
+    border-color: #28a745;
+}
+
+.hint-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+}
+
+.hint-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    background: #007bff;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.hint-seen .hint-number {
+    background: #28a745;
+}
+
+.hint-badge {
+    background: #28a745;
+    color: white;
+    padding: 0.125rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+}
+
+.hint-text {
+    color: #495057;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.hints-actions {
+    padding: 1rem;
+    border-top: 1px solid #f0f0f0;
+    background: #fafafa;
+    text-align: center;
+}
+
+.show-hint-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.show-hint-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.show-hint-btn:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    font-size: 1.1rem;
+}
+
+.all-hints-seen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    color: #28a745;
+    font-weight: 600;
+    background: #e8f5e8;
+    border: 1px solid #28a745;
+    border-radius: 25px;
+}
+
+.completion-icon {
+    font-size: 1.1rem;
+}
+
+/* Animation for new hints */
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hint-seen {
+    animation: slideInUp 0.3s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hints-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .hints-toggle {
+        border-bottom: 1px solid #e1e5e9;
+    }
+
+    .reset-hints-btn {
+        margin: 0;
+        border-radius: 0;
+    }
+
+    .hint {
+        padding: 0.75rem;
+    }
+
+    .show-hint-btn {
+        width: 100%;
+        border-radius: 6px;
+    }
+}

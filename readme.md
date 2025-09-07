@@ -392,3 +392,5 @@ I want to merge the "main" branch of "backend" into the repository "monorepo" as
 The commit history of the other repo needs to be preserved
 
 SOLUTION: git subtree add --prefix=backend backend main
+
+## Use Case: Git Worktree

@@ -57,3 +57,11 @@ git config --global core.editor nano\n
 This can safely be done by reloading the iframe window, logging in, executing the git command and then running the exercise shell script.
 
 The pre-installed editors are vim and nano
+
+## Git Scripts
+
+- Each script will clean the **workspace** and you will get a fresh start
+- A remote repository is configured in the **.git-repos** directory by using the file:// protocol. This means that "git remote -v" will output something like **/home/alexander/git-training-usecases/.git-repos/<repo>**.
+- If you don't have global username and email configured default values will be put for you in the workspace repos.
+- Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
+- Some test cases run interactive rebases and generate a "fake_editor.sh" script that simulates the user input. This works using the GIT_EDITOR and GIT_SEQUENCE_EDITOR env variables.

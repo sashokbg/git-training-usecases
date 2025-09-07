@@ -1,7 +1,14 @@
 .app {
     display: flex;
-    height: 100vh;
+    min-height: 100vh;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+/* Right-side column wrapper (header + content) */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar {
@@ -170,8 +177,29 @@
 }
 
 .exercise-content {
-    width: 70%;
-    padding: 0.5rem;
+    flex: 1;
+    padding: 2rem 1rem;
+}
+
+/* Footer */
+.footer {
+    margin: 2rem 0 1rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e6e6e6;
+    color: #666;
+    font-size: 0.9rem;
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.footer a {
+    color: #3366cc;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline;
 }
 
 /* Start exercise button section */
@@ -226,10 +254,10 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     padding: 2rem;
-    margin-bottom: 2rem;
     border-radius: 8px;
     text-align: center;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 0 0.5rem;
 }
 
 .content-header h1 {
@@ -503,17 +531,10 @@
 .drawer {
     display: flex;
     flex-direction: column;
-    height: 100%;
     background-color: #2d2d2d;
     color: white;
     transition: width 0.3s ease;
     overflow: hidden;
-}
-.drawer.open {
-    width: 240px;
-}
-.drawer.closed {
-    width: auto;
 }
 .drawer .drawer-toggle {
     background: none;
@@ -521,11 +542,6 @@
     color: inherit;
     font-size: 1.2em;
     padding: 8px;
-}
-.drawer .drawer-toggle.closed {
-    display: flex;
-    align-items: center;
-    gap: 4px;
 }
 .drawer .drawer-content {
     display: flex;
@@ -538,10 +554,4 @@
     gap: 0.5rem;
     margin-bottom: 1rem;
     font-size: 0.9em;
-}
-.drawer .status-icon.small {
-    font-size: 1em;
-}
-.drawer .wrench-icon {
-    font-size: 1em;
 }

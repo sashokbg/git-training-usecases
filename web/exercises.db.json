@@ -81,5 +81,27 @@
         "The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."
       ]
     }
+  },
+  {
+    "exercise_title": "Pulling From another Repository",
+    "exercise_description": [
+      "A colleague works on another repository that is not related to mine and have pushed a commit called 'other commit'.",
+      "I want to get the content of their commit on my repo.",
+      "I added the second repository as a remote and pulled",
+      "And I receive the following error when trying merge: fatal: refusing to merge unrelated histories"
+    ],
+    "command_history": [
+      "git remote add second $OTHER_REPO_URL",
+      "git fetch second",
+      "git merge second/main"
+    ],
+    "script": "cannot_merge_unreleated_history.sh",
+    "hints": [],
+    "expected": {
+      "explanations": [
+        "Recover the code found in the 'second' remote",
+        "Your worktree should contain a file called 'file_other.txt'."
+      ]
+    }
   }
 ]

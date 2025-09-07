@@ -33,7 +33,19 @@
         }
       },
       "expected": {
-        "type": "string"
+        "type": "object",
+        "properties": {
+          "script": {
+            "type": "string",
+            "description": "A script that can be executed to verify if the exercise was completed successfully."
+          },
+          "explanations": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
       }
     }
   }

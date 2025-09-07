@@ -14,7 +14,11 @@
       "What happens if you close the terminal window without any changes ?",
       "What happens if you delete the commit message ?"
     ],
-    "expected": "The user should have properly aborted the merge. No merge commits should be present in the history."
+    "expected": {
+      "explanations": [
+        "The user should have properly aborted the merge. No merge commits should be present in the history."
+      ]
+    }
   },
   {
     "exercise_title": "Accidental Merge",
@@ -28,7 +32,9 @@
     "script": "accidental_merge.sh",
     "hints": [
     ],
-    "expected": "The user should"
+    "expected": {
+      "explanations": []
+    }
   },
   {
     "exercise_title": "Rebase Conflict Resolution",
@@ -48,6 +54,32 @@
       "Continue the rebase process with 'git rebase --continue'.",
       "If you want to abort the rebase, use 'git rebase --abort'."
     ],
-    "expected": "The user should successfully resolve the conflict and complete the rebase, resulting in a clean linear history with the feat branch rebased onto main."
+    "expected": {
+      "explanations": [
+        "The user should successfully resolve the conflict and complete the rebase, resulting in a clean linear history with the feat branch rebased onto main."
+      ]
+    }
+  },
+  {
+    "exercise_title": "Accidental Commit of Sensitive Data",
+    "exercise_description": [
+      "I accidentally committed my password to the repo",
+      "I want to completely remove any mention of my password from the history"
+    ],
+    "command_history": [
+    ],
+    "script": "accidentally_commited_password.sh",
+    "hints": [
+      "Use 'git lg' to view the commit history",
+      "On what branches is it present ?",
+      "How do you remove the commit from both local and remote branch ?",
+      "How about the git objects ?"
+    ],
+    "expected": {
+      "script": "for f in $(find .git/objects -type f | sed -e 's|.git/objects||g' -e 's|/||g'); do git cat-file -p $f; done | grep 'pa$$word'",
+      "explanations": [
+        "The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."
+      ]
+    }
   }
 ]

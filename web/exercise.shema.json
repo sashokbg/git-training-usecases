@@ -3,34 +3,38 @@
   "$id": "learn-git-question",
   "title": "Question",
   "description": "A Learn-Git Question Schema",
-  "type": "object",
-  "properties": {
-    "exercise_title": {
-      "type": "string",
-      "description": "The question title"
-    },
-    "exercise_description": {
-      "type": "string",
-      "description": "A detailed description of the exercise"
-    },
-    "command_history": {
-      "type": "array",
-      "items": {
+  "type": "array",
+  "items": {
+    "properties": {
+      "exercise_title": {
+        "type": "string",
+        "description": "The question title"
+      },
+      "exercise_description": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "description": "A detailed description of the exercise. Each line is a paragraph."
+      },
+      "command_history": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "script": {
+        "type": "string"
+      },
+      "hints": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      },
+      "expected": {
         "type": "string"
       }
-    },
-    "script": {
-      "type": "string"
-    },
-    "hints": {
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "expected": {
-      "type": "string"
     }
-  },
-  "required": ["question"]
+  }
 }

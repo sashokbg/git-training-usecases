@@ -1,7 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
-import {exercises} from './exercises.db';
-import { ShellLoginService } from './services/shellinabox.service';
+import exercises from './exercises.db.json';
+import {ShellLoginService} from './services/shellinabox.service';
 import HintsComponent from './hints.component';
 
 function App() {
@@ -220,7 +220,8 @@ function App() {
                 </div>
             )}
             {/* Login Status Indicator */}
-            <div className={`login-status-indicator ${isLoggedIn ? 'logged-in' : loginInProgress ? 'logging-in' : 'logged-out'}`}>
+            <div
+                className={`login-status-indicator ${isLoggedIn ? 'logged-in' : loginInProgress ? 'logging-in' : 'logged-out'}`}>
                 <span className="status-icon">
                     {isLoggedIn ? '✅' : loginInProgress ? '🔄' : '❌'}
                 </span>

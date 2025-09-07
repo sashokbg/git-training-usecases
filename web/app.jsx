@@ -13,6 +13,9 @@ function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [questionStarted, setQuestionStarted] = useState(false);
     const [loginInProgress, setLoginInProgress] = useState(false);
+    const [editor, setEditor] = useState('vim');
+    const [pendingEditor, setPendingEditor] = useState(null);
+    const [showEditorConfirm, setShowEditorConfirm] = useState(false);
 
     const iframeRef = useRef(null);
     const outputRef = useRef(null);
@@ -24,6 +27,12 @@ function App() {
     // Initialize login service
     useEffect(() => {
         loginServiceRef.current = new ShellLoginService(iframeRef, url, 1); // 1 retry
+
+        // Load editor preference
+        const saved = localStorage.getItem('editor');
+        if (saved === 'nano' || saved === 'vim') {
+            setEditor(saved);
+        }
 
         return () => {
             if (loginServiceRef.current) {
@@ -123,6 +132,13 @@ function App() {
         // Clear previous output
         setOutput('');
 
+        // Apply editor preference in the shell
+        if (editor === 'nano') {
+            sendMessage('input', 'git config --global core.editor nano\n')
+        } else {
+            sendMessage('input', 'git config --global core.editor vim\n')
+        }
+
         // Send command to load the question script
         sendMessage('input', `source ${question.script}\n`);
     };
@@ -165,12 +181,52 @@ function App() {
         alert('Solution submitted! Check the terminal output to verify your answer.');
     };
 
-    const toggleHints = () => {
-        setHintsExpanded(!hintsExpanded);
+    const handleEditorSelect = (e) => {
+        const newEditor = e.target.value;
+        if (questionStarted && isLoggedIn) {
+            setPendingEditor(newEditor);
+            setShowEditorConfirm(true);
+        } else {
+            setEditor(newEditor);
+            localStorage.setItem('editor', newEditor);
+        }
+    };
+
+    const cancelEditorToggle = () => {
+        setPendingEditor(null);
+        setShowEditorConfirm(false);
+    };
+
+    const confirmEditorToggle = () => {
+        if (pendingEditor) {
+            setEditor(pendingEditor);
+            localStorage.setItem('editor', pendingEditor);
+            setShowEditorConfirm(false);
+            setPendingEditor(null);
+            // Restart shell to apply editor change
+            setOutput('');
+            if (loginServiceRef.current) {
+                loginServiceRef.current.reset();
+            }
+            if (iframeRef.current) {
+                iframeRef.current.contentWindow.location.reload();
+            }
+        }
     };
 
     return (
         <div className="app">
+            {showEditorConfirm && (
+                <div className="confirm-overlay">
+                    <div className="confirm-panel">
+                        <p>Changing the editor to {pendingEditor} will restart your shell. Continue?</p>
+                        <div className="confirm-buttons">
+                            <button className="cancel" onClick={cancelEditorToggle}>Cancel</button>
+                            <button className="confirm" onClick={confirmEditorToggle}>Confirm</button>
+                        </div>
+                    </div>
+                </div>
+            )}
             {/* Login Status Indicator */}
             <div className={`login-status-indicator ${isLoggedIn ? 'logged-in' : loginInProgress ? 'logging-in' : 'logged-out'}`}>
                 <span className="status-icon">
@@ -198,6 +254,18 @@ function App() {
                 <header className="content-header">
                     <h1>Git Exercise</h1>
                     <p className="exercise-subtitle">Practice your Git skills with interactive exercises</p>
+                    <div className="editor-select-container">
+                        <label htmlFor="editor-select" className="editor-select-label">Switch editor:</label>
+                        <select
+                            id="editor-select"
+                            className="editor-select"
+                            value={editor}
+                            onChange={handleEditorSelect}
+                        >
+                            <option value="vim">Vim</option>
+                            <option value="nano">Nano</option>
+                        </select>
+                    </div>
                 </header>
 
                 <h2 className="question-title">{currentQuestion.title}</h2>

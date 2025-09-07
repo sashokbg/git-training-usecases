@@ -174,6 +174,84 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Editor selector in header */
+.content-header {
+    position: relative;
+}
+.editor-select-container {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.editor-select-label {
+    color: #fff;
+    font-weight: 500;
+}
+.editor-select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    border: none;
+    background-color: #ffeb3b;
+    color: #333;
+    cursor: pointer;
+}
+.editor-select:hover {
+    background-color: #fdd835;
+}
+
+/* Confirm modal overlay for editor change */
+.confirm-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+.confirm-panel {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    text-align: center;
+}
+.confirm-panel p {
+    margin-bottom: 1.5rem;
+}
+.confirm-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+.confirm-buttons button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.confirm-buttons .cancel {
+    background-color: #ccc;
+    color: #333;
+}
+.confirm-buttons .cancel:hover {
+    background-color: #bbb;
+}
+.confirm-buttons .confirm {
+    background-color: #f44336;
+    color: #fff;
+}
+.confirm-buttons .confirm:hover {
+    background-color: #d32f2f;
+}
+
 .exercise-subtitle {
     margin: 0;
     font-size: 1.2rem;

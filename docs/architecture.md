@@ -19,25 +19,41 @@ To perform the exercise, the user is provided with a shell that is embedded in t
 
 The shell communication is done via iframe messages
 
-More details on how this is done can be found here: https://github.com/shellinabox/shellinabox/blob/master/misc/embedded.html
+More details on how this is done can be found
+here: https://github.com/shellinabox/shellinabox/blob/master/misc/embedded.html
 
 ### Shell Status
 
-The program will start and automatically login the user in the shell, using default credentials "learn-git:learn-git". 
+The program will start and automatically login the user in the shell, using default credentials "learn-git:learn-git".
 
 The shell will automatically retry the connection if it fails.
 
-A special service called services.shellinabox.service.js is dedicated to handling the communication with the embedded shell.
+A special service called services.shellinabox.service.js is dedicated to handling the communication with the embedded
+shell.
 
-This service will listen for output of the shell and detect certain patterns, allowing to deduce its current state, ie not initialized, initializing, initialized.
+This service will listen for output of the shell and detect certain patterns, allowing to deduce its current state, ie
+not initialized, initializing, initialized.
 
 ### Exercise Script
 
-Once the login is successful, the shell will run the exercise script. The script will handle creating a new git repository and perform commands that put the user in a pre-defined scenario.
-
+Once the login is successful, the shell will run the exercise script. The script will handle creating a new git
+repository and perform commands that put the user in a pre-defined scenario.
 
 ## Hints
 
-The hints system is saved into local storage. When a user sees a hint it is recorded with key question_name.hint\[index].seen and value true.
+The hints system is saved into local storage. When a user sees a hint it is recorded with key question_name.hint\[index]
+.seen and value true.
 
 When we reset the seen hints the local storage related to hints is cleared.
+
+## Changing the Default Editor
+
+The default editor can be changed by running the following commands:
+
+```shell
+git config --global core.editor nano\n
+```
+
+This can safely be done by reloading the iframe window, logging in, executing the git command and then running the exercise shell script.
+
+The pre-installed editors are vim and nano

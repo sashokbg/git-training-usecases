@@ -72,6 +72,32 @@
     line-height: 1.3;
 }
 
+
+.editor-select-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.editor-select-label {
+    color: #fff;
+    font-weight: 500;
+}
+
+.editor-select {
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    border: none;
+    background-color: #ffeb3b;
+    color: #333;
+    cursor: pointer;
+}
+
+.editor-select:hover {
+    background-color: #fdd835;
+}
+
+
 .app p {
     font-size: 1.1em;
 }
@@ -144,8 +170,8 @@
 }
 
 .exercise-content {
-   width: 70%;
-    padding-left: 0.5rem;
+    width: 70%;
+    padding: 0.5rem;
 }
 
 /* Prevent text selection on iframe container */
@@ -178,29 +204,6 @@
 .content-header {
     position: relative;
 }
-.editor-select-container {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-.editor-select-label {
-    color: #fff;
-    font-weight: 500;
-}
-.editor-select {
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    border: none;
-    background-color: #ffeb3b;
-    color: #333;
-    cursor: pointer;
-}
-.editor-select:hover {
-    background-color: #fdd835;
-}
 
 /* Confirm modal overlay for editor change */
 .confirm-overlay {
@@ -215,6 +218,7 @@
     align-items: center;
     z-index: 2000;
 }
+
 .confirm-panel {
     background: #fff;
     padding: 2rem;
@@ -223,31 +227,38 @@
     max-width: 400px;
     text-align: center;
 }
+
 .confirm-panel p {
     margin-bottom: 1.5rem;
 }
+
 .confirm-buttons {
     display: flex;
     justify-content: center;
     gap: 1rem;
 }
+
 .confirm-buttons button {
     padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
+
 .confirm-buttons .cancel {
     background-color: #ccc;
     color: #333;
 }
+
 .confirm-buttons .cancel:hover {
     background-color: #bbb;
 }
+
 .confirm-buttons .confirm {
     background-color: #f44336;
     color: #fff;
 }
+
 .confirm-buttons .confirm:hover {
     background-color: #d32f2f;
 }
@@ -344,20 +355,22 @@
 }
 
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .login-status-indicator {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
     padding: 10px 16px;
-    border-radius: 25px;
-    font-size: 14px;
+    margin-bottom: 8px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
     font-weight: 500;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: 8px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -395,7 +408,7 @@
 }
 
 .status-icon {
-    font-size: 16px;
+    font-size: 14px;
     animation: none;
 }
 
@@ -426,20 +439,70 @@
 
 /* Enhanced spin animation for loading state */
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 /* Responsive design for mobile */
 @media (max-width: 768px) {
     .login-status-indicator {
-        top: 10px;
-        right: 10px;
-        padding: 8px 12px;
-        font-size: 12px;
+        margin-bottom: 6px;
+        padding: 5px 10px;
+        font-size: 11px;
     }
 
     .status-icon {
-        font-size: 14px;
+        font-size: 12px;
     }
+}
+
+/* Drawer styles */
+.drawer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #2d2d2d;
+    color: white;
+    transition: width 0.3s ease;
+    overflow: hidden;
+}
+.drawer.open {
+    width: 240px;
+}
+.drawer.closed {
+    width: auto;
+}
+.drawer .drawer-toggle {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1.2em;
+    padding: 8px;
+}
+.drawer .drawer-toggle.closed {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.drawer .drawer-content {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+}
+.drawer .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 0.9em;
+}
+.drawer .status-icon.small {
+    font-size: 1em;
+}
+.drawer .wrench-icon {
+    font-size: 1em;
 }

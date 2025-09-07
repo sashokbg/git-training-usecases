@@ -3,6 +3,7 @@ import './app.css';
 import exercises from './exercises.db.json';
 import {ShellLoginService} from './services/shellinabox.service';
 import HintsComponent from './hints.component';
+import ToolboxDrawer from './toolbox_drawer.component';
 
 function App() {
     const [output, setOutput] = useState('');
@@ -219,16 +220,6 @@ function App() {
                     </div>
                 </div>
             )}
-            {/* Login Status Indicator */}
-            <div
-                className={`login-status-indicator ${isLoggedIn ? 'logged-in' : loginInProgress ? 'logging-in' : 'logged-out'}`}>
-                <span className="status-icon">
-                    {isLoggedIn ? '✅' : loginInProgress ? '🔄' : '❌'}
-                </span>
-                <span className="status-text">
-                    {isLoggedIn ? 'Shell Initialized' : loginInProgress ? 'Shell Initializing...' : 'Shell not Initialized'}
-                </span>
-            </div>
 
             <div className="sidebar">
                 <h3 className="sidebar-title">Git Exercises</h3>
@@ -247,18 +238,6 @@ function App() {
                 <header className="content-header">
                     <h1>Git Exercise</h1>
                     <p className="exercise-subtitle">Practice your Git skills with interactive exercises</p>
-                    <div className="editor-select-container">
-                        <label htmlFor="editor-select" className="editor-select-label">Switch editor:</label>
-                        <select
-                            id="editor-select"
-                            className="editor-select"
-                            value={editor}
-                            onChange={handleEditorSelect}
-                        >
-                            <option value="vim">Vim</option>
-                            <option value="nano">Nano</option>
-                        </select>
-                    </div>
                 </header>
 
                 <h2 className="exercise-title">{currentExercise.exercise_title}</h2>
@@ -310,7 +289,6 @@ function App() {
                     </div>
                 )}
 
-                {/* Use the new HintsComponent */}
                 <HintsComponent
                     exerciseTitle={currentExercise.exercise_title}
                     hints={currentExercise.hints}
@@ -322,15 +300,21 @@ function App() {
                             Submit Solution
                         </button>
 
-                        {currentExercise.expected && (
+                        {currentExercise.expected.explanations && (
                             <div className="expected-outcome">
                                 <h4>Expected Outcome:</h4>
-                                <p>{currentExercise.expected}</p>
+                                <p>{currentExercise.expected.explanations}</p>
                             </div>
                         )}
                     </div>
                 )}
             </div>
+            <ToolboxDrawer
+                isLoggedIn={isLoggedIn}
+                loginInProgress={loginInProgress}
+                editor={editor}
+                onEditorSelect={handleEditorSelect}
+            />
         </div>
     );
 }

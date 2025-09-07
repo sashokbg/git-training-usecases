@@ -13,6 +13,7 @@
     "@vitejs/plugin-react": "^5.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "vite": "^7.1.4"
+    "vite": "^7.1.4",
+    "zustand": "^5.0.8"
   }
 }

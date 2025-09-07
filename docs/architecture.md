@@ -54,7 +54,7 @@ The default editor can be changed by running the following commands:
 git config --global core.editor nano\n
 ```
 
-This can safely be done by reloading the iframe window, logging in, executing the git command and then running the exercise shell script.
+This can safely be done by reloading the iframe window, logging in, executing the git command, and then running the exercise shell script.
 
 The pre-installed editors are vim and nano
 
@@ -65,3 +65,14 @@ The pre-installed editors are vim and nano
 - If you don't have global username and email configured default values will be put for you in the workspace repos.
 - Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
 - Some test cases run interactive rebases and generate a "fake_editor.sh" script that simulates the user input. This works using the GIT_EDITOR and GIT_SEQUENCE_EDITOR env variables.
+
+## Git Aliases
+
+Importing the aliases is done by parsing the .gitconfig file content provided by the user and leaving only the alias section.
+
+Then a new iframe connecting to the shellinaboc instance is created out of the user's vision, a login is performed, and the
+aliases are imported in the /home/learn-git/.gitconfig file.
+
+## App State Store
+
+The app uses a centralized state store implemented using Zustand

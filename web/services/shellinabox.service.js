@@ -1,10 +1,20 @@
 /**
  * Service to handle Shell in a Box login detection and retry logic
  */
+import ShellService from './shell.service';
+
 export class ShellLoginService {
-    constructor(iframeRef, url, maxRetries = 1) {
-        this.iframeRef = iframeRef;
-        this.url = url;
+    constructor(iframeRefOrShell, url, maxRetries = 1) {
+        // Support both legacy (iframeRef + url) and new (ShellService instance) usage.
+        if (iframeRefOrShell && typeof iframeRefOrShell.post === 'function') {
+            this.shell = iframeRefOrShell;
+            this.iframeRef = this.shell.iframeRef;
+            this.url = this.shell.url;
+        } else {
+            this.iframeRef = iframeRefOrShell;
+            this.url = url;
+            this.shell = new ShellService(this.iframeRef, this.url);
+        }
         this.maxRetries = maxRetries;
         this.retryCount = 0;
         this.isLoggedIn = false;
@@ -138,9 +148,7 @@ export class ShellLoginService {
     reloadAndAttemptLogin() {
         if (this.iframeRef.current) {
             this.outputBuffer = '';
-            this.iframeRef.current.contentWindow.location.reload();
-
-            // Wait for iframe to reload and then attempt login
+            this.shell.reload();
             setTimeout(() => {
                 this.attemptLogin();
             }, 2000);
@@ -162,9 +170,9 @@ export class ShellLoginService {
 
         if (this.iframeRef.current) {
             setTimeout(() => {
-                this.sendMessage('input', "learn-git\n");
+                this.shell.sendInput("learn-git\n");
                 setTimeout(() => {
-                    this.sendMessage('input', "learn-git\n");
+                    this.shell.sendInput("learn-git\n");
                 }, 500);
             }, 1000);
         }
@@ -176,10 +184,7 @@ export class ShellLoginService {
      * @param {string} data - Message data
      */
     sendMessage(type, data = null) {
-        const message = JSON.stringify({ type, data });
-        if (this.iframeRef.current && this.iframeRef.current.contentWindow) {
-            this.iframeRef.current.contentWindow.postMessage(message, this.url);
-        }
+        this.shell.post(type, data);
     }
 
     /**

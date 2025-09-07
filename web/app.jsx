@@ -2,31 +2,38 @@ import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
 import exercises from './exercises.db.json';
 import {ShellLoginService} from './services/shellinabox.service';
+import ShellService from './services/shell.service';
 import HintsComponent from './hints.component';
 import ToolboxDrawer from './toolbox_drawer.component';
 import Footer from './footer.component';
+import useAppStore from './app.store';
 
 function App() {
   const [output, setOutput] = useState('');
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const [sessionStatus, setSessionStatus] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const {
+    isLoggedIn,
+    loginInProgress,
+    setIsLoggedIn,
+    setLoginInProgress,
+  } = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
-  const [loginInProgress, setLoginInProgress] = useState(false);
   const [editor, setEditor] = useState('vim');
   const [pendingEditor, setPendingEditor] = useState(null);
   const [showEditorConfirm, setShowEditorConfirm] = useState(false);
 
-  const iframeRef = useRef(null);
+  const shellIframeRef = useRef(null);
   const outputRef = useRef(null);
   const loginServiceRef = useRef(null);
+  const shellServiceRef = useRef(null);
 
   const url = "http://localhost:5173/shell";
   const currentExercise = exercises[currentExerciseIndex];
 
-  // Initialize login service
+  // Initialize shell comms + login service
   useEffect(() => {
-    loginServiceRef.current = new ShellLoginService(iframeRef, url, 1); // 1 retry
+    shellServiceRef.current = new ShellService(shellIframeRef, url);
+    loginServiceRef.current = new ShellLoginService(shellServiceRef.current, url, 1); // 1 retry
 
     // Load editor preference
     const saved = localStorage.getItem('editor');
@@ -35,6 +42,7 @@ function App() {
     }
 
     return () => {
+      shellServiceRef.current && shellServiceRef.current.cleanup();
       if (loginServiceRef.current) {
         loginServiceRef.current.cleanup();
       }
@@ -60,48 +68,21 @@ function App() {
   }
 
   useEffect(() => {
-    const handleMessage = (message) => {
-      if (new URL(message.origin).host !== new URL(url).host) {
-        return;
+    if (!shellServiceRef.current) {
+      return;
+    }
+    const offReady = shellServiceRef.current.onReady(() => startLoginProcess());
+    const offOutput = shellServiceRef.current.onOutput((data) => {
+      setOutput((prev) => prev + data);
+      if (loginServiceRef.current) {
+        loginServiceRef.current.processOutput(data);
       }
-
-      // Handle response according to response type
-      const decoded = JSON.parse(message.data);
-      switch (decoded.type) {
-        case "ready":
-          // Shellinabox is ready to communicate and we will enable console output
-          // by default.
-          const readyMessage = JSON.stringify({
-            type: 'output',
-            data: 'enable'
-          });
-          iframeRef.current.contentWindow.postMessage(readyMessage, url);
-          // Start login process after shell is ready
-          startLoginProcess();
-          break;
-        case "output":
-          // Append new output
-          setOutput(prev => prev + decoded.data);
-
-          // Process output through login service for login detection
-          if (loginServiceRef.current) {
-            loginServiceRef.current.processOutput(decoded.data);
-          }
-          break;
-        case "session":
-          // Reload session status
-          setSessionStatus(decoded.data);
-          break;
-      }
-    };
-
-    window.addEventListener("message", handleMessage);
-
+    });
     return () => {
-      console.log("Removed event listener");
-      window.removeEventListener("message", handleMessage);
+      offReady && offReady();
+      offOutput && offOutput();
     };
-  }, [url]);
+  }, [shellServiceRef.current]);
 
   // Auto-scroll output to bottom when new content is added
   useEffect(() => {
@@ -112,7 +93,7 @@ function App() {
 
   useEffect(() => {
     if (isLoggedIn && exerciseStarted) {
-      if (iframeRef.current && currentExercise) {
+      if (shellIframeRef.current && currentExercise) {
         setTimeout(() => {
           loadExercise(currentExercise);
         }, 500);
@@ -121,10 +102,7 @@ function App() {
   }, [isLoggedIn, exerciseStarted]);
 
   const sendMessage = (type, data = null) => {
-    const message = JSON.stringify({type, data});
-    if (iframeRef.current && iframeRef.current.contentWindow) {
-      iframeRef.current.contentWindow.postMessage(message, url);
-    }
+    shellServiceRef.current && shellServiceRef.current.post(type, data);
   };
 
   const loadExercise = (exercise) => {
@@ -166,8 +144,8 @@ function App() {
       loginServiceRef.current.reset();
     }
 
-    if (iframeRef.current) {
-      iframeRef.current.contentWindow.location.reload();
+    if (shellIframeRef.current) {
+      shellIframeRef.current.contentWindow.location.reload();
     }
   }
 
@@ -202,8 +180,8 @@ function App() {
       if (loginServiceRef.current) {
         loginServiceRef.current.reset();
       }
-      if (iframeRef.current) {
-        iframeRef.current.contentWindow.location.reload();
+      if (shellServiceRef.current) {
+        shellServiceRef.current.reload();
       }
     }
   };
@@ -282,7 +260,7 @@ function App() {
               )}
 
               <iframe
-                ref={iframeRef}
+                ref={shellIframeRef}
                 id="shell"
                 src={url}
                 className="shell-iframe"

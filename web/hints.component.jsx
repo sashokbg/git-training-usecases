@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import './hints.component.css';
 
-const HintsComponent = ({ questionTitle, hints }) => {
+const HintsComponent = ({ exerciseTitle, hints }) => {
     const [hintsExpanded, setHintsExpanded] = useState(false);
     const [seenHints, setSeenHints] = useState(new Set());
     const [nextHintIndex, setNextHintIndex] = useState(0);
 
-    // Load seen hints from localStorage on mount and when question changes
     useEffect(() => {
-        if (!questionTitle || !hints || hints.length === 0) return;
+        if (!exerciseTitle || !hints || hints.length === 0) return;
 
         const seenHintsSet = new Set();
         let nextIndex = 0;
 
         for (let i = 0; i < hints.length; i++) {
-            const key = `${questionTitle}.hint[${i}].seen`;
+            const key = `${exerciseTitle}.hint[${i}].seen`;
             if (localStorage.getItem(key) === 'true') {
                 seenHintsSet.add(i);
                 nextIndex = i + 1;
@@ -25,7 +24,7 @@ const HintsComponent = ({ questionTitle, hints }) => {
 
         setSeenHints(seenHintsSet);
         setNextHintIndex(Math.min(nextIndex, hints.length));
-    }, [questionTitle, hints]);
+    }, [exerciseTitle, hints]);
 
     const toggleHints = () => {
         setHintsExpanded(!hintsExpanded);
@@ -34,7 +33,7 @@ const HintsComponent = ({ questionTitle, hints }) => {
     const showNextHint = () => {
         if (nextHintIndex < hints.length) {
             const hintIndex = nextHintIndex;
-            const key = `${questionTitle}.hint[${hintIndex}].seen`;
+            const key = `${exerciseTitle}.hint[${hintIndex}].seen`;
 
             // Mark hint as seen in localStorage
             localStorage.setItem(key, 'true');
@@ -46,11 +45,10 @@ const HintsComponent = ({ questionTitle, hints }) => {
     };
 
     const resetHints = () => {
-        if (!questionTitle || !hints) return;
+        if (!exerciseTitle || !hints) return;
 
-        // Clear all hint-related localStorage entries for this question
         for (let i = 0; i < hints.length; i++) {
-            const key = `${questionTitle}.hint[${i}].seen`;
+            const key = `${exerciseTitle}.hint[${i}].seen`;
             localStorage.removeItem(key);
         }
 

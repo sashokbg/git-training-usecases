@@ -1,7 +1,7 @@
-export const questions = [
+export const exercises = [
     {
-        "title": "Abort a merge",
-        "description": "While working on a branch, I initiated a merge. I am presented with merge prompt screen, but now I wish to abort the operation.",
+        "exercise_title": "Abort a merge",
+        "exercise_description": "While working on a branch, I initiated a merge. I am presented with merge prompt screen, but now I wish to abort the operation.",
         "command_history": [
           "git merge"
         ],
@@ -14,8 +14,8 @@ export const questions = [
         expected: "The user should have properly aborted the merge. No merge commits should be present in the history."
     },
     {
-        "title": "Accidental Merge",
-        "description": `
+        "exercise_title": "Accidental Merge",
+        "exercise_description": `
 I worked on a feature and I wanted to rebase upon main
 But instead I did a merge
         `,
@@ -29,8 +29,8 @@ But instead I did a merge
 
     },
     {
-        "title": "Rebase Conflict Resolution",
-        "description": `I edited the text1.txt file
+        "exercise_title": "Rebase Conflict Resolution",
+        "exercise_description": `I edited the text1.txt file
 I want to rebase my feat branch onto main
 But another user edited the same file on main`,
         "command_history": [

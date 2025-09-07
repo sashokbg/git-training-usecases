@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "learn-git-question",
+  "title": "Question",
+  "description": "A Learn-Git Question Schema",
+  "type": "object",
+  "properties": {
+    "exercise_title": {
+      "type": "string",
+      "description": "The question title"
+    },
+    "exercise_description": {
+      "type": "string",
+      "description": "A detailed description of the exercise"
+    },
+    "command_history": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "script": {
+      "type": "string"
+    },
+    "hints": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected": {
+      "type": "string"
+    }
+  },
+  "required": ["question"]
+}

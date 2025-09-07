@@ -1,17 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
-import {questions} from './questions.db';
+import {exercises} from './exercises.db';
 import { ShellLoginService } from './services/shellinabox.service';
 import HintsComponent from './hints.component';
 
-// Import the questions database
-
 function App() {
     const [output, setOutput] = useState('');
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
     const [sessionStatus, setSessionStatus] = useState(null);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [questionStarted, setQuestionStarted] = useState(false);
+    const [exerciseStarted, setExerciseStarted] = useState(false);
     const [loginInProgress, setLoginInProgress] = useState(false);
     const [editor, setEditor] = useState('vim');
     const [pendingEditor, setPendingEditor] = useState(null);
@@ -22,7 +20,7 @@ function App() {
     const loginServiceRef = useRef(null);
 
     const url = "http://localhost:5173/shell";
-    const currentQuestion = questions[currentQuestionIndex];
+    const currentExercise = exercises[currentExerciseIndex];
 
     // Initialize login service
     useEffect(() => {
@@ -110,16 +108,15 @@ function App() {
         }
     }, [output]);
 
-    // Load question only when started
     useEffect(() => {
-        if (isLoggedIn && questionStarted) {
-            if (iframeRef.current && currentQuestion) {
+        if (isLoggedIn && exerciseStarted) {
+            if (iframeRef.current && currentExercise) {
                 setTimeout(() => {
-                    loadQuestion(currentQuestion);
+                    loadExercise(currentExercise);
                 }, 500);
             }
         }
-    }, [isLoggedIn, questionStarted]);
+    }, [isLoggedIn, exerciseStarted]);
 
     const sendMessage = (type, data = null) => {
         const message = JSON.stringify({type, data});
@@ -128,7 +125,7 @@ function App() {
         }
     };
 
-    const loadQuestion = (question) => {
+    const loadExercise = (exercise) => {
         // Clear previous output
         setOutput('');
 
@@ -139,13 +136,13 @@ function App() {
             sendMessage('input', 'git config --global core.editor vim\n')
         }
 
-        // Send command to load the question script
-        sendMessage('input', `source ${question.script}\n`);
+        // Send command to load the exercise script
+        sendMessage('input', `source ${exercise.script}\n`);
     };
 
-    const handleQuestionSelect = (index) => {
-        setCurrentQuestionIndex(index);
-        setQuestionStarted(false);
+    const handleExerciseSelect = (index) => {
+        setCurrentExerciseIndex(index);
+        setExerciseStarted(false);
 
         // Reset login status when changing exercises
         setIsLoggedIn(false);
@@ -157,8 +154,8 @@ function App() {
         }
     };
 
-    const handleStartQuestion = () => {
-        setQuestionStarted(true);
+    const handleStartExercise = () => {
+        setExerciseStarted(true);
         setIsLoggedIn(false);
         setLoginInProgress(false);
 
@@ -173,17 +170,12 @@ function App() {
     }
 
     const handleSubmit = () => {
-        // Here you could implement submission logic
-        // For now, just log the current question
-        console.log('Submitting question:', currentQuestion.title);
-
-        // You might want to validate the solution or move to next question
-        alert('Solution submitted! Check the terminal output to verify your answer.');
+        console.log('Submitting exercise:', currentExercise.exercise_title);
     };
 
     const handleEditorSelect = (e) => {
         const newEditor = e.target.value;
-        if (questionStarted && isLoggedIn) {
+        if (exerciseStarted && isLoggedIn) {
             setPendingEditor(newEditor);
             setShowEditorConfirm(true);
         } else {
@@ -239,18 +231,18 @@ function App() {
 
             <div className="sidebar">
                 <h3 className="sidebar-title">Git Exercises</h3>
-                {questions.map((question, index) => (
+                {exercises.map((exercise, index) => (
                     <div
                         key={index}
-                        className={`sidebar-item ${index === currentQuestionIndex ? 'active' : ''}`}
-                        onClick={() => handleQuestionSelect(index)}
+                        className={`sidebar-item ${index === currentExerciseIndex ? 'active' : ''}`}
+                        onClick={() => handleExerciseSelect(index)}
                     >
-                        <span className="question-number">{index + 1}.</span>
-                        <span className="question-title-short">{question.title}</span>
+                        <span className="exercise-number">{index + 1}.</span>
+                        <span className="exercise-title-short">{exercise.exercise_title}</span>
                     </div>
                 ))}
             </div>
-            <div className="question-content">
+            <div className="exercise-content">
                 <header className="content-header">
                     <h1>Git Exercise</h1>
                     <p className="exercise-subtitle">Practice your Git skills with interactive exercises</p>
@@ -268,16 +260,16 @@ function App() {
                     </div>
                 </header>
 
-                <h2 className="question-title">{currentQuestion.title}</h2>
+                <h2 className="exercise-title">{currentExercise.exercise_title}</h2>
 
-                <div className="question-description">
-                    <p>{currentQuestion.description}</p>
+                <div className="exercise-description">
+                    <p>{currentExercise.exercise_description}</p>
 
-                    {currentQuestion.command_history && currentQuestion.command_history.length > 0 && (
+                    {currentExercise.command_history && currentExercise.command_history.length > 0 && (
                         <div className="command-history">
                             <h4>Command History:</h4>
                             <ul>
-                                {currentQuestion.command_history.map((command, index) => (
+                                {currentExercise.command_history.map((command, index) => (
                                     <li key={index}><code>{command}</code></li>
                                 ))}
                             </ul>
@@ -285,16 +277,16 @@ function App() {
                     )}
                 </div>
 
-                {!questionStarted && (
-                    <div className="question-start">
-                        <button className="start-button" onClick={handleStartQuestion}>
+                {!exerciseStarted && (
+                    <div className="exercise-start">
+                        <button className="start-button" onClick={handleStartExercise}>
                             Start
                         </button>
                     </div>
                 )}
 
-                {questionStarted && (
-                    <div className="question-content-workspace">
+                {exerciseStarted && (
+                    <div className="exercise-content-workspace">
                         {loginInProgress && (
                             <div className="login-status">
                                 <p>🔄 Logging in to shell...</p>
@@ -319,20 +311,20 @@ function App() {
 
                 {/* Use the new HintsComponent */}
                 <HintsComponent
-                    questionTitle={currentQuestion.title}
-                    hints={currentQuestion.hints}
+                    exerciseTitle={currentExercise.exercise_title}
+                    hints={currentExercise.hints}
                 />
 
-                {questionStarted && (
-                    <div className="question-actions">
+                {exerciseStarted && (
+                    <div className="exercise-actions">
                         <button className="submit-button" onClick={handleSubmit}>
                             Submit Solution
                         </button>
 
-                        {currentQuestion.expected && (
+                        {currentExercise.expected && (
                             <div className="expected-outcome">
                                 <h4>Expected Outcome:</h4>
-                                <p>{currentQuestion.expected}</p>
+                                <p>{currentExercise.expected}</p>
                             </div>
                         )}
                     </div>

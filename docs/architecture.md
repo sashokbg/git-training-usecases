@@ -2,7 +2,7 @@
 
 ## Questions Database
 
-Questions are formulated using a JS file found under web/questions.db.js
+Questions are formulated using a JS file found under web/exercises.db.js
 
 Each question entry should have the following fields:
 

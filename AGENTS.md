@@ -25,6 +25,7 @@
 
 ## Testing Guidelines
 - To determine later
+- You have a browser mcp tool at your disposal, when making visual edits, open the browser at http://localhost:5173/ to verify things are working as expected.
 
 ## Commit & Pull Request Guidelines
 - Do not perform any commit or pull actions

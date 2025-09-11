@@ -4,7 +4,6 @@
  * a secondary channel (ShellService + ShellLoginService) for background tasks.
  */
 import ShellService from './shell.service';
-import { ShellLoginService } from './shellinabox.service';
 
 class HiddenShellChannel {
   constructor(url, maxRetries = 2) {

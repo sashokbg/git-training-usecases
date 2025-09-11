@@ -27,3 +27,4 @@ For convenience, you can import your personal git aliases. To do this, click on 
 A pop-in will show with a text box. Copy and paste your entire .gitconfig file into this box or if you prefer, only the `[alias]` section.
 
 If you put your entire .gitconfig file in, the field, the program will only import the `[alias]` section.
+

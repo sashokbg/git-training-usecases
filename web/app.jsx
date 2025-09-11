@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
 import exercises from './exercises.db.json';
-import {ShellLoginService} from './services/shellinabox.service';
 import ShellService from './services/shell.service';
 import HintsComponent from './hints.component';
 import ToolboxDrawer from './toolbox_drawer.component';
@@ -10,9 +9,10 @@ import useAppStore from './app.store';
 import ImportAliasesModal from './import_aliases_modal.component';
 import AliasImportService from './services/alias_import.service';
 import HiddenShellChannel from './services/hidden_shell_channel.service';
+import {LoginOperation} from "./model/login.operation";
+import {ShellService2} from "./model/shell.service2";
 
 function App() {
-  const [output, setOutput] = useState('');
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const {
     isLoggedIn,
@@ -31,7 +31,6 @@ function App() {
   const [aliasImportResult, setAliasImportResult] = useState(null);
 
   const shellIframeRef = useRef(null);
-  const outputRef = useRef(null);
   const loginServiceRef = useRef(null);
   const shellServiceRef = useRef(null);
 
@@ -41,7 +40,6 @@ function App() {
   // Initialize shell comms + login service
   useEffect(() => {
     shellServiceRef.current = new ShellService(shellIframeRef, url);
-    loginServiceRef.current = new ShellLoginService(shellServiceRef.current, url, 1); // 1 retry
 
     // Load editor preference
     const saved = localStorage.getItem('editor');
@@ -56,48 +54,6 @@ function App() {
       }
     };
   }, [url]);
-
-  function handleLoginResult(success) {
-    setLoginInProgress(false);
-    setIsLoggedIn(success);
-
-    if (!success) {
-      console.error('Login failed after all retry attempts');
-      // You might want to show an error message to the user here
-    }
-  }
-
-  function startLoginProcess() {
-    setLoginInProgress(true);
-    setIsLoggedIn(false);
-    if (loginServiceRef.current) {
-      loginServiceRef.current.startLogin(handleLoginResult);
-    }
-  }
-
-  useEffect(() => {
-    if (!shellServiceRef.current) {
-      return;
-    }
-    const offReady = shellServiceRef.current.onReady(() => startLoginProcess());
-    const offOutput = shellServiceRef.current.onOutput((data) => {
-      setOutput((prev) => prev + data);
-      if (loginServiceRef.current) {
-        loginServiceRef.current.processOutput(data);
-      }
-    });
-    return () => {
-      offReady && offReady();
-      offOutput && offOutput();
-    };
-  }, [shellServiceRef.current]);
-
-  // Auto-scroll output to bottom when new content is added
-  useEffect(() => {
-    if (outputRef.current) {
-      outputRef.current.scrollTop = outputRef.current.scrollHeight;
-    }
-  }, [output]);
 
   useEffect(() => {
     if (isLoggedIn && exerciseStarted) {
@@ -114,10 +70,7 @@ function App() {
   };
 
   const loadExercise = (exercise) => {
-    // Clear previous output
-    setOutput('');
 
-    // Apply editor preference in the shell
     if (editor === 'nano') {
       sendMessage('input', 'git config --global core.editor nano\n')
     } else {
@@ -155,6 +108,11 @@ function App() {
     if (shellIframeRef.current) {
       shellIframeRef.current.contentWindow.location.reload();
     }
+
+    setTimeout(() => {
+      let loginOperation = new LoginOperation();
+      new ShellService2(shellIframeRef, null, "http://localhost:5173/shell").execute(loginOperation);
+    }, 1000)
   }
 
   const handleSubmit = () => {
@@ -190,6 +148,7 @@ function App() {
 
       await svc.setAliasesInShell(parsed.aliases, channel.shell, channel.loginService);
       await channel.waitForOutput('ALIASES_IMPORTED', 5000);
+      setShowAliasModal(false);
     } catch (e) {
       setAliasImportResult({ aliases: {}, errors: [String(e && e.message ? e.message : e)] });
     } finally {
@@ -282,7 +241,13 @@ function App() {
           <h2 className="exercise-title">{currentExercise.exercise_title}</h2>
 
           <div className="exercise-description">
-            <p>{currentExercise.exercise_description}</p>
+            {Array.isArray(currentExercise.exercise_description)
+              ? currentExercise.exercise_description.map((line, idx) => (
+                  <p key={idx}>{line}</p>
+                ))
+              : (
+                <p>{currentExercise.exercise_description}</p>
+              )}
 
             {currentExercise.command_history && currentExercise.command_history.length > 0 && (
               <div className="command-history">
@@ -339,10 +304,19 @@ function App() {
                 Submit Solution
               </button>
 
-              {currentExercise.expected.explanations && (
+              {currentExercise.expected && currentExercise.expected.explanations && (
                 <div className="expected-outcome">
                   <h4>Expected Outcome:</h4>
-                  <p>{currentExercise.expected.explanations}</p>
+                  {Array.isArray(currentExercise.expected.explanations)
+                    ? (
+                      <ul>
+                        {currentExercise.expected.explanations.map((exp, idx) => (
+                          <li key={idx}>{exp}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p>{currentExercise.expected.explanations}</p>
+                    )}
                 </div>
               )}
             </div>

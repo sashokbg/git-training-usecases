@@ -4,7 +4,9 @@ export const useAppStore = create((set) => ({
   isLoggedIn: false,
   loginInProgress: false,
   hiddenChannelOps: 0,
+  showAliasImport: false,
 
+  setShowAliasImport: (value) => set({ showAliasImport: value }),
   setIsLoggedIn: (value) => set({ isLoggedIn: value }),
   setLoginInProgress: (value) => set({ loginInProgress: value }),
   resetShellState: () => set({ isLoggedIn: false, loginInProgress: false, sessionStatus: null }),

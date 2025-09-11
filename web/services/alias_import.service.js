@@ -13,16 +13,13 @@
  * - Parsing supports basic INI-style gitconfig and focuses on the [alias] section.
  */
 
-import ShellService from './shell.service';
-import { ShellLoginService } from './shellinabox.service';
-
 class AliasImportService {
   /**
    * Convenience method: parse aliases from raw text and apply them.
    * Returns the parsed aliases and any parsing errors.
    *
    * @param {string} text
-   * @param {ShellService} shellService
+   * @param {ShellService2} shellService
    * @param {ShellLoginService} [loginService]
    * @returns {Promise<{aliases: Record<string,string>, errors: string[]}>}
    */
@@ -62,8 +59,7 @@ class AliasImportService {
       if (sec) {
         // Normalize to lower-case base section (ignore subsection names)
         const header = sec[1];
-        const base = header.split(/\s+/)[0].toLowerCase();
-        section = base;
+        section = header.split(/\s+/)[0].toLowerCase();
         continue;
       }
 
@@ -114,7 +110,7 @@ class AliasImportService {
    * Ensures the shell is logged in if a ShellLoginService is provided.
    *
    * @param {Record<string,string>} aliases
-   * @param {ShellService} shellService
+   * @param {ShellService2} shellService
    * @param {ShellLoginService} [loginService]
    * @returns {Promise<void>}
    */
@@ -148,7 +144,6 @@ class AliasImportService {
     const lines = [];
     for (const [name, value] of Object.entries(aliases)) {
       const escaped = this._singleQuote(value);
-      // Example: git config --global alias.lg 'log --oneline'
       lines.push(`git config --global alias.${name} '${escaped}'`);
     }
     // Add a newline after final echo to ensure execution

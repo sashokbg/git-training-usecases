@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
-const ImportAliasesModal = ({ open, onClose, onImport, busy = false, result = null }) => {
+const ImportAliasesModal = ({open, onClose, onImport, busy = false, result = null}) => {
   const [text, setText] = useState('');
 
   if (!open) return null;

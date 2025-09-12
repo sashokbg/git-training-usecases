@@ -20,10 +20,8 @@ export class RunExerciseScriptOperation extends ShellOperation {
       this.outputBuffer = this.outputBuffer.slice(-500);
     }
     if (this.outputBuffer.includes(`source ${this.script}`)) {
-      this.isDone$.next(true);
-      this.subscriptions.unsubscribe();
+      this._complete()
     }
 
-    this.isDone$.next(true);
   }
 }

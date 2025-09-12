@@ -37,13 +37,15 @@ const ToolboxDrawer = ({
                     <button onClick={() => onEditorSelect('vim')}>Vim</button>
                     <button onClick={() => onEditorSelect('nano')}>Nano</button>
                 </div>
-                <div className="drawer-actions" style={{ marginTop: '12px' }}>
+                <div className="editor-select-container" style={{ marginTop: '12px' }}>
+                    <label htmlFor="editor-select" className="editor-select-label">
+                        Import Git Aliases:
+                    </label>
                     <button
-                        className="drawer-action"
                         onClick={() => onImportAliases && onImportAliases()}
                         title={'Import your git aliases'}
                     >
-                        Import Aliases
+                        Import
                     </button>
                 </div>
             </div>

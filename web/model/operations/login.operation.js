@@ -39,8 +39,7 @@ export class LoginOperation extends ShellOperation {
     // Check for login success
     for (const pattern of this.loginSuccessPatterns) {
       if (pattern.test(this.outputBuffer)) {
-        this.isDone$.next(true);
-        this.subscriptions.unsubscribe();
+        this._complete()
         return;
       }
     }
@@ -48,8 +47,7 @@ export class LoginOperation extends ShellOperation {
     // Check for login failure
     for (const pattern of this.loginFailurePatterns) {
       if (pattern.test(this.outputBuffer)) {
-        this.isDone$.error(false);
-        this.subscriptions.unsubscribe();
+        this.isDone$.error(new Error('Login failed'))
         return;
       }
     }

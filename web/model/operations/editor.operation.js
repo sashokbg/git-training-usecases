@@ -22,8 +22,7 @@ export class EditorOperation extends ShellOperation {
       this.outputBuffer = this.outputBuffer.slice(-500);
     }
     if (this.outputBuffer.includes('EDITOR_SET')) {
-      this.isDone$.next(true);
-      this.subscriptions.unsubscribe();
+      this._complete()
     }
   }
 }

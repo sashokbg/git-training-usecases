@@ -11,18 +11,12 @@ import {IframeWrapper} from "./model/iframe_wrapper";
 import {LoginOperation} from "./model/operations/login.operation";
 import {RunExerciseScriptOperation} from "./model/operations/run_exercise_script.operation";
 import {EditorOperation} from "./model/operations/editor.operation";
+import {AliasImportOperation} from "./model/operations/alias_import.operation";
 import {delay, mergeMap, of} from "rxjs";
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const {
-    isLoggedIn,
-    loginInProgress,
-    setIsLoggedIn,
-    setLoginInProgress,
-    startHiddenChannelOp,
-    endHiddenChannelOp,
-  } = useAppStore();
+  const {isLoggedIn, loginInProgress, setIsLoggedIn, setLoginInProgress} = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
   const [editor, setEditor] = useState('vim');
   const [pendingEditor, setPendingEditor] = useState(null);
@@ -89,23 +83,42 @@ function App() {
 
   const handleImportAliases = async (text) => {
     setAliasImportBusy(true);
-    startHiddenChannelOp();
 
     try {
       const svc = new AliasImportService();
       const parsed = svc.parseAliasesFromGitConfig(text);
       setAliasImportResult({aliases: parsed.aliases, errors: parsed.errors});
 
-      if (Object.keys(parsed.aliases).length === 0) {
+      const hasAliases = Object.keys(parsed.aliases).length > 0;
+      if (!hasAliases) {
+        setAliasImportBusy(false);
         return; // Nothing to import
       }
 
+      // Run login + alias import in a background iframe session
       setShowAliasModal(false);
+      IframeWrapper.executeInBackground((iframe) => {
+        return of(null).pipe(
+          delay(100),
+          mergeMap(() => new LoginOperation(iframe).execute()),
+          delay(100),
+          mergeMap(() => new AliasImportOperation(iframe, parsed.aliases).execute()),
+        );
+      }).subscribe({
+        next: () => {
+        },
+        error: (err) => {
+          console.error('An error occurred while importing aliases:', err);
+          setAliasImportBusy(false);
+          setAliasImportResult({aliases: {}, errors: [String(err && err.message ? err.message : err)]});
+        },
+        complete: () => {
+          setAliasImportBusy(false);
+        }
+      });
     } catch (e) {
-      setAliasImportResult({aliases: {}, errors: [String(e && e.message ? e.message : e)]});
-    } finally {
       setAliasImportBusy(false);
-      endHiddenChannelOp();
+      setAliasImportResult({aliases: {}, errors: [String(e && e.message ? e.message : e)]});
     }
   };
 

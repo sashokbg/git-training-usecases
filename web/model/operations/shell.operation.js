@@ -66,6 +66,12 @@ export class ShellOperation {
     }
   }
 
+  _complete() {
+    this.isDone$.next(true);
+    this.isDone$.complete();
+    this.subscriptions.unsubscribe();
+  }
+
   _onOutput(output) {
   }
 }

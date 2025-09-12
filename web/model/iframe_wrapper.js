@@ -1,24 +1,13 @@
-import {ReplaySubject} from "rxjs";
+import {catchError, ReplaySubject, tap} from "rxjs";
 import {messageChannel$} from "./message_channel";
 import {SHELL_URL} from "./configs";
+import React from "react";
 
 export class IframeWrapper {
   constructor(iframeRef) {
     this.iframeRef = iframeRef;
     this._iframeSubject$ = new ReplaySubject(1);
 
-    // if (this.isHidden) {
-    //   const el = document.createElement('iframe');
-    //   el.src = this.url;
-    //   el.setAttribute('aria-hidden', 'true');
-    //   // el.style.position = 'absolute';
-    //   // el.style.width = '0';
-    //   // el.style.height = '0';
-    //   // el.style.border = '0';
-    //   // el.style.opacity = '0';
-    //   document.body.appendChild(el);
-    //   this.hiddenFrame = el;
-    // }
     messageChannel$.subscribe(message => this._handleMessage(message));
   }
 
@@ -61,5 +50,33 @@ export class IframeWrapper {
       default:
         break;
     }
+  }
+
+  static executeInBackground(callback) {
+    const el = document.createElement('iframe');
+    el.src = SHELL_URL;
+    el.setAttribute('aria-hidden', 'true');
+    // el.style.position = 'absolute';
+    // el.style.width = '0';
+    // el.style.height = '0';
+    // el.style.border = '0';
+    // el.style.opacity = '0';
+    document.body.appendChild(el);
+
+    const ref = React.createRef()
+    ref.current = el;
+    const wrapper = new IframeWrapper(ref);
+
+    return callback(wrapper).pipe(
+      tap(() => {
+        document.body.removeChild(el);
+        el.remove();
+      }),
+      catchError((err) => {
+        console.error('Error executing in background:', err);
+        document.body.removeChild(el);
+        el.remove();
+      })
+    );
   }
 }

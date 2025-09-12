@@ -4,14 +4,11 @@ import useAppStore from './app.store';
 const ToolboxDrawer = ({
     isLoggedIn,
     loginInProgress,
-    editor,
     onEditorSelect,
-    exerciseStarted = false,
     onImportAliases,
 }) => {
     const [open, setOpen] = useState(true);
-    const hiddenOps = useAppStore((s) => s.hiddenChannelOps);
-    const hiddenBusy = hiddenOps > 0;
+    const backgroundOperation = useAppStore((s) => s.backgroundOpInProgress);
     const statusIcon = isLoggedIn ? '✅' : loginInProgress ? '🔄' : '❌';
 
     return (
@@ -29,23 +26,16 @@ const ToolboxDrawer = ({
                       ? 'Shell Initializing...'
                       : 'Shell not Initialized'}
                     </span>
-                    {hiddenBusy && (
+                    {backgroundOperation && (
                         <span className="small-loader" title="Background tasks running"/>
                     )}
                 </div>
                 <div className="editor-select-container">
                     <label htmlFor="editor-select" className="editor-select-label">
-                        Switch editor:
+                        Set Git Editor:
                     </label>
-                    <select
-                        id="editor-select"
-                        className="editor-select"
-                        value={editor}
-                        onChange={(e) => onEditorSelect(e)}
-                    >
-                        <option value="vim">Vim</option>
-                        <option value="nano">Nano</option>
-                    </select>
+                    <button onClick={() => onEditorSelect('vim')}>Vim</button>
+                    <button onClick={() => onEditorSelect('nano')}>Nano</button>
                 </div>
                 <div className="drawer-actions" style={{ marginTop: '12px' }}>
                     <button

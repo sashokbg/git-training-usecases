@@ -10,6 +10,8 @@ import AliasImportService from './services/alias_import.service';
 import {IframeWrapper} from "./model/iframe_wrapper";
 import {LoginOperation} from "./model/operations/login.operation";
 import {RunExerciseScriptOperation} from "./model/operations/run_exercise_script.operation";
+import {EditorOperation} from "./model/operations/editor.operation";
+import {delay, mergeMap, of} from "rxjs";
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -24,7 +26,6 @@ function App() {
   const [exerciseStarted, setExerciseStarted] = useState(false);
   const [editor, setEditor] = useState('vim');
   const [pendingEditor, setPendingEditor] = useState(null);
-  const [showEditorConfirm, setShowEditorConfirm] = useState(false);
   const [showAliasModal, setShowAliasModal] = useState(false);
   const [aliasImportBusy, setAliasImportBusy] = useState(false);
   const [aliasImportResult, setAliasImportResult] = useState(null);
@@ -108,46 +109,25 @@ function App() {
     }
   };
 
-  const handleEditorSelect = (e) => {
-    const newEditor = e.target.value;
-    if (exerciseStarted && isLoggedIn) {
-      setPendingEditor(newEditor);
-      setShowEditorConfirm(true);
-    } else {
+  const handleEditorSelect = (newEditor) => {
+    IframeWrapper.executeInBackground((iframe) => {
+      return of(null).pipe(
+        delay(100),
+        mergeMap(() => {
+          return new LoginOperation(iframe).execute()
+        }),
+        delay(100),
+        mergeMap(() => {
+          return new EditorOperation(iframe, newEditor).execute()
+        }));
+    }).subscribe(() => {
       setEditor(newEditor);
       localStorage.setItem('editor', newEditor);
-    }
-  };
-
-  const cancelEditorToggle = () => {
-    setPendingEditor(null);
-    setShowEditorConfirm(false);
-  };
-
-  const confirmEditorToggle = () => {
-    if (pendingEditor) {
-      setEditor(pendingEditor);
-      localStorage.setItem('editor', pendingEditor);
-      setShowEditorConfirm(false);
-      setPendingEditor(null);
-      // Apply editor preference using hidden channel (no restart)
-    }
+    });
   };
 
   return (
     <div className="app">
-      {showEditorConfirm && (
-        <div className="confirm-overlay">
-          <div className="confirm-panel">
-            <p>Changing the editor to {pendingEditor} will update your global Git editor. Continue?</p>
-            <div className="confirm-buttons">
-              <button className="cancel" onClick={cancelEditorToggle}>Cancel</button>
-              <button className="confirm" onClick={confirmEditorToggle}>Confirm</button>
-            </div>
-          </div>
-        </div>
-      )}
-
       <div className="sidebar">
         <h3 className="sidebar-title">Git Exercises</h3>
         {exercises.map((exercise, index) => (
@@ -258,7 +238,6 @@ function App() {
       <ToolboxDrawer
         isLoggedIn={isLoggedIn}
         loginInProgress={loginInProgress}
-        editor={editor}
         onEditorSelect={handleEditorSelect}
         exerciseStarted={exerciseStarted}
         onImportAliases={handleOpenAliasModal}

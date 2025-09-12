@@ -1,12 +1,46 @@
 import {SHELL_URL} from "../configs";
+import {delay, from, Subject, Subscription, tap} from "rxjs";
+import {messageChannel$} from "../message_channel";
+import useAppStore from "../../app.store";
 
 export class ShellOperation {
   /**
    *
    * @param iframe {IframeWrapper}
+   * @param commands {string[]}
    */
-  constructor(iframe) {
+  constructor(iframe, commands) {
     this.iframe = iframe;
+    /**
+     * @type {Subject<boolean>}
+     */
+    this.isDone$ = new Subject();
+    this.subscriptions = new Subscription();
+    this._commands = commands;
+  }
+
+  /**
+   * @returns {Observable<boolean>}
+   */
+  execute() {
+    useAppStore.getState().setBackgroundOpInProgress(true)
+
+    console.log('execute', this._commands);
+    const readySub = this.iframe.getIframe().subscribe(() => {
+      this.subscriptions.add(messageChannel$.subscribe(message => this._handleMessage(message)));
+
+      this.subscriptions.add(from(this._commands).pipe(delay(100))
+        .subscribe(command => {
+          const message = JSON.stringify({type: 'input', data: command});
+          this.iframe.iframeRef.current.contentWindow.postMessage(message, SHELL_URL);
+        }));
+    });
+
+    this.subscriptions.add(readySub);
+
+    return this.isDone$.pipe(tap(() => {
+      useAppStore.getState().setBackgroundOpInProgress(false)
+    }));
   }
 
   _handleMessage(messageEvent) {

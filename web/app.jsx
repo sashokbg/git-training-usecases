@@ -1,16 +1,15 @@
 import React, {useEffect, useRef, useState} from 'react';
 import './app.css';
 import exercises from './exercises.db.json';
-import ShellService from './services/shell.service';
 import HintsComponent from './hints.component';
 import ToolboxDrawer from './toolbox_drawer.component';
 import Footer from './footer.component';
 import useAppStore from './app.store';
 import ImportAliasesModal from './import_aliases_modal.component';
 import AliasImportService from './services/alias_import.service';
-import HiddenShellChannel from './services/hidden_shell_channel.service';
-import {LoginOperation} from "./model/login.operation";
-import {ShellService2} from "./model/shell.service2";
+import {IframeWrapper} from "./model/iframe_wrapper";
+import {LoginOperation} from "./model/operations/login.operation";
+import {RunExerciseScriptOperation} from "./model/operations/run_exercise_script.operation";
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -31,68 +30,30 @@ function App() {
   const [aliasImportResult, setAliasImportResult] = useState(null);
 
   const shellIframeRef = useRef(null);
-  const loginServiceRef = useRef(null);
-  const shellServiceRef = useRef(null);
+
+  const [iframeWrapper, setIframeWrapper] = useState(new IframeWrapper(shellIframeRef));
 
   const url = "http://localhost:5173/shell";
   const currentExercise = exercises[currentExerciseIndex];
 
-  // Initialize shell comms + login service
   useEffect(() => {
-    shellServiceRef.current = new ShellService(shellIframeRef, url);
-
-    // Load editor preference
     const saved = localStorage.getItem('editor');
     if (saved === 'nano' || saved === 'vim') {
       setEditor(saved);
     }
-
-    return () => {
-      shellServiceRef.current && shellServiceRef.current.cleanup();
-      if (loginServiceRef.current) {
-        loginServiceRef.current.cleanup();
-      }
-    };
   }, [url]);
 
   useEffect(() => {
     if (isLoggedIn && exerciseStarted) {
-      if (shellIframeRef.current && currentExercise) {
-        setTimeout(() => {
-          loadExercise(currentExercise);
-        }, 500);
-      }
+      new RunExerciseScriptOperation(iframeWrapper, currentExercise.script).execute().subscribe()
     }
   }, [isLoggedIn, exerciseStarted]);
-
-  const sendMessage = (type, data = null) => {
-    shellServiceRef.current && shellServiceRef.current.post(type, data);
-  };
-
-  const loadExercise = (exercise) => {
-
-    if (editor === 'nano') {
-      sendMessage('input', 'git config --global core.editor nano\n')
-    } else {
-      sendMessage('input', 'git config --global core.editor vim\n')
-    }
-
-    // Send command to load the exercise script
-    sendMessage('input', `source ${exercise.script}\n`);
-  };
 
   const handleExerciseSelect = (index) => {
     setCurrentExerciseIndex(index);
     setExerciseStarted(false);
-
-    // Reset login status when changing exercises
     setIsLoggedIn(false);
     setLoginInProgress(false);
-
-    // Reset login service state
-    if (loginServiceRef.current) {
-      loginServiceRef.current.reset();
-    }
   };
 
   const handleStartExercise = () => {
@@ -100,24 +61,19 @@ function App() {
     setIsLoggedIn(false);
     setLoginInProgress(false);
 
-    // Reset login service state
-    if (loginServiceRef.current) {
-      loginServiceRef.current.reset();
+    // Ensure a fresh iframe session so subscribers don't receive stale values
+    if (iframeWrapper) {
+      iframeWrapper.newSession();
     }
 
     if (shellIframeRef.current) {
       shellIframeRef.current.contentWindow.location.reload();
     }
-
-    setTimeout(() => {
-      let loginOperation = new LoginOperation();
-      new ShellService2(shellIframeRef, null, "http://localhost:5173/shell").execute(loginOperation);
-    }, 1000)
+    new LoginOperation(iframeWrapper).execute().subscribe(() => {
+      setLoginInProgress(false);
+      setIsLoggedIn(true);
+    });
   }
-
-  const handleSubmit = () => {
-    console.log('Submitting exercise:', currentExercise.exercise_title);
-  };
 
   const handleOpenAliasModal = () => {
     setAliasImportResult(null);
@@ -132,46 +88,22 @@ function App() {
 
   const handleImportAliases = async (text) => {
     setAliasImportBusy(true);
-    const channel = new HiddenShellChannel(url, 2);
     startHiddenChannelOp();
 
     try {
-      await channel.init();
-
       const svc = new AliasImportService();
       const parsed = svc.parseAliasesFromGitConfig(text);
-      setAliasImportResult({ aliases: parsed.aliases, errors: parsed.errors });
+      setAliasImportResult({aliases: parsed.aliases, errors: parsed.errors});
 
       if (Object.keys(parsed.aliases).length === 0) {
         return; // Nothing to import
       }
 
-      await svc.setAliasesInShell(parsed.aliases, channel.shell, channel.loginService);
-      await channel.waitForOutput('ALIASES_IMPORTED', 5000);
       setShowAliasModal(false);
     } catch (e) {
-      setAliasImportResult({ aliases: {}, errors: [String(e && e.message ? e.message : e)] });
+      setAliasImportResult({aliases: {}, errors: [String(e && e.message ? e.message : e)]});
     } finally {
-      channel.cleanup();
       setAliasImportBusy(false);
-      endHiddenChannelOp();
-    }
-  };
-
-  const applyEditorPreference = async (newEditor) => {
-    const channel = new HiddenShellChannel(url, 2);
-    startHiddenChannelOp();
-    try {
-      await channel.init();
-      const cmd = newEditor === 'nano'
-        ? "git config --global core.editor nano\n echo 'EDITOR_SET'\n"
-        : "git config --global core.editor vim\n echo 'EDITOR_SET'\n";
-      channel.send(cmd);
-      await channel.waitForOutput('EDITOR_SET', 4000);
-    } catch (_) {
-      // Swallow errors for now; we can surface a toast in later iteration
-    } finally {
-      channel.cleanup();
       endHiddenChannelOp();
     }
   };
@@ -184,7 +116,6 @@ function App() {
     } else {
       setEditor(newEditor);
       localStorage.setItem('editor', newEditor);
-      applyEditorPreference(newEditor);
     }
   };
 
@@ -200,7 +131,6 @@ function App() {
       setShowEditorConfirm(false);
       setPendingEditor(null);
       // Apply editor preference using hidden channel (no restart)
-      applyEditorPreference(pendingEditor);
     }
   };
 
@@ -243,8 +173,8 @@ function App() {
           <div className="exercise-description">
             {Array.isArray(currentExercise.exercise_description)
               ? currentExercise.exercise_description.map((line, idx) => (
-                  <p key={idx}>{line}</p>
-                ))
+                <p key={idx}>{line}</p>
+              ))
               : (
                 <p>{currentExercise.exercise_description}</p>
               )}
@@ -300,7 +230,7 @@ function App() {
 
           {exerciseStarted && (
             <div className="exercise-actions">
-              <button className="submit-button" onClick={handleSubmit}>
+              <button className="submit-button">
                 Submit Solution
               </button>
 

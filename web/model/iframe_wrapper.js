@@ -3,6 +3,8 @@ import {messageChannel$} from "./message_channel";
 import {SHELL_URL} from "./configs";
 import React from "react";
 
+const BACKGROUND_IFRAME_TIMEOUT = 5000;
+
 export class IframeWrapper {
   constructor(iframeRef) {
     this.iframeRef = iframeRef;
@@ -70,7 +72,7 @@ export class IframeWrapper {
     const autoClose = setTimeout(() => {
       document.body.removeChild(el);
       el.remove();
-    }, 2000)
+    }, BACKGROUND_IFRAME_TIMEOUT)
 
     return callback(wrapper).pipe(
       tap(() => {

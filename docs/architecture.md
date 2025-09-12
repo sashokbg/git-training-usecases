@@ -15,29 +15,59 @@ Each question entry should have the following fields:
 
 ## Shell Emulator
 
-To perform the exercise, the user is provided with a shell that is embedded in the browser via an iframe.
+To perform the exercise, the user is provided with a shell which is embedded in the browser via an iframe.
 
 The shell communication is done via iframe messages
 
 More details on how this is done can be found
 here: https://github.com/shellinabox/shellinabox/blob/master/misc/embedded.html
 
-### Shell Status
+## Communication Protocol
+
+To communicate with the shell, a special IFrame Wrapper class is used. It is responsible for initializing the iframe and 
+ waiting until it is ready to communicate. This is done by listening for the "ready" message.
+
+Once the iframe is ready, the wrapped will send an "output enabled" command, making the shell send all the output to the host window.
+
+The host window subscribes to the "output" event via "window.addEventListener()" and pushes them through a RXJS Subject.
+This queue is unique for all iframes and commands in the program.
+
+Each Operation is responsible for detecting if it is the recipient of the output messages.
+
+## Operations
+
+Operations a list of shell commands to be executed inside the remote shell. Each Operation extends the basic "ShellOperation".
+An Operation is coupled to an iframe (there is the visible iframe with the user shell, but also hidden iframes, used for sending config commands).
+
+When an operation is executed, it will wait for the wrapped to provide the iframe and will then post all the cmd commands to the iframe.
+
+The _onOutput() method is called as soon as the shell starts sending back output. Each command should evaluate the output and detect if 
+it properly executed on the remote shell or not. \
+To do so, it is sometimes needed to add an "echo 'COMMAND_FINISHED'" or similar to the list of cmds for the operation.
+
+## Background Operations
+
+The IframeWrapper provides a special static method "executeInBackground(callback)" that will create a new hidden iframe (and shell)
+and will wrap it for you. The wrapped iframe is provided as an argument in the callback parameter. You can then execute operations
+on the background iframe within this callback.
+
+The hidden iframe is removed after the commands finish.
+
+There is also a hard timeout of 5 seconds after which the background iframe will be removed.
+
+
+## Shell Status
 
 The program will start and automatically login the user in the shell, using default credentials "learn-git:learn-git".
 
-The shell will automatically retry the connection if it fails.
+The shell status is updated as soon as the login operation is finished. (see Operations)
 
-A special service called services.shellinabox.service.js is dedicated to handling the communication with the embedded
-shell.
-
-This service will listen for output of the shell and detect certain patterns, allowing to deduce its current state, ie
-not initialized, initializing, initialized.
-
-### Exercise Script
+## Exercise Script
 
 Once the login is successful, the shell will run the exercise script. The script will handle creating a new git
 repository and perform commands that put the user in a pre-defined scenario.
+
+See RunExerciseScriptOperation
 
 ## Hints
 
@@ -58,7 +88,11 @@ This can safely be done by reloading the iframe window, logging in, executing th
 
 The pre-installed editors are vim and nano
 
+See Background Operations
+
 ## Git Scripts
+
+Here are some technical details on how the exercise shell scripts work:
 
 - Each script will clean the **workspace** and you will get a fresh start
 - A remote repository is configured in the **.git-repos** directory by using the file:// protocol. This means that "git remote -v" will output something like **/home/alexander/git-training-usecases/.git-repos/<repo>**.
@@ -66,11 +100,11 @@ The pre-installed editors are vim and nano
 - Git "lg" and "s" aliases are configured to use a pretty print git history and for status. Usage: "git lg" and "git s"
 - Some test cases run interactive rebases and generate a "fake_editor.sh" script that simulates the user input. This works using the GIT_EDITOR and GIT_SEQUENCE_EDITOR env variables.
 
-## Git Aliases
+## Importing Git Aliases
 
 Importing the aliases is done by parsing the .gitconfig file content provided by the user and leaving only the alias section.
 
-Then a new iframe connecting to the shellinaboc instance is created out of the user's vision, a login is performed, and the
+Then a new iframe connecting to the shellinabox instance is created out of the user's vision, a login is performed, and the
 aliases are imported in the /home/learn-git/.gitconfig file.
 
 ## App State Store

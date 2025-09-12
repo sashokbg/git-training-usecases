@@ -1,4 +1,4 @@
-import {catchError, ReplaySubject, tap} from "rxjs";
+import {catchError, delay, ReplaySubject, tap} from "rxjs";
 import {messageChannel$} from "./message_channel";
 import {SHELL_URL} from "./configs";
 import React from "react";
@@ -12,7 +12,7 @@ export class IframeWrapper {
   }
 
   getIframe() {
-    return this._iframeSubject$.asObservable()
+    return this._iframeSubject$.asObservable().pipe(delay(200));
   }
 
   newSession() {
@@ -67,12 +67,19 @@ export class IframeWrapper {
     ref.current = el;
     const wrapper = new IframeWrapper(ref);
 
+    const autoClose = setTimeout(() => {
+      document.body.removeChild(el);
+      el.remove();
+    }, 2000)
+
     return callback(wrapper).pipe(
       tap(() => {
+        clearTimeout(autoClose)
         document.body.removeChild(el);
         el.remove();
       }),
       catchError((err) => {
+        clearTimeout(autoClose)
         console.error('Error executing in background:', err);
         document.body.removeChild(el);
         el.remove();

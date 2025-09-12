@@ -3,6 +3,8 @@ import {delay, from, Subject, Subscription, tap} from "rxjs";
 import {messageChannel$} from "../message_channel";
 import useAppStore from "../../app.store";
 
+const COMMAND_TIMEOUT = 5000;
+
 export class ShellOperation {
   /**
    *
@@ -17,12 +19,17 @@ export class ShellOperation {
     this.isDone$ = new Subject();
     this.subscriptions = new Subscription();
     this._commands = commands;
+    this.timeoutId = 0;
   }
 
   /**
    * @returns {Observable<boolean>}
    */
   execute() {
+    this.timeoutId = setTimeout(() => {
+      this.isDone$.error(new Error('Command timed out'))
+    }, COMMAND_TIMEOUT)
+
     useAppStore.getState().setBackgroundOpInProgress(true)
 
     console.log('execute', this._commands);
@@ -70,6 +77,7 @@ export class ShellOperation {
     this.isDone$.next(true);
     this.isDone$.complete();
     this.subscriptions.unsubscribe();
+    clearTimeout(this.timeoutId);
   }
 
   _onOutput(output) {

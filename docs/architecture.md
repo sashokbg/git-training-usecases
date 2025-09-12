@@ -45,6 +45,8 @@ The _onOutput() method is called as soon as the shell starts sending back output
 it properly executed on the remote shell or not. \
 To do so, it is sometimes needed to add an "echo 'COMMAND_FINISHED'" or similar to the list of cmds for the operation.
 
+All operations have a default timeout of 5 seconds after which the operation will be considered failed.
+
 ## Background Operations
 
 The IframeWrapper provides a special static method "executeInBackground(callback)" that will create a new hidden iframe (and shell)

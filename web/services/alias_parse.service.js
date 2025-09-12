@@ -13,22 +13,7 @@
  * - Parsing supports basic INI-style gitconfig and focuses on the [alias] section.
  */
 
-class AliasImportService {
-  /**
-   * Convenience method: parse aliases from raw text and apply them.
-   * Returns the parsed aliases and any parsing errors.
-   *
-   * @param {string} text
-   * @param {ShellService2} shellService
-   * @param {ShellLoginService} [loginService]
-   * @returns {Promise<{aliases: Record<string,string>, errors: string[]}>}
-   */
-  async importFromText(text, shellService, loginService) {
-    const { aliases, errors } = this.parseAliasesFromGitConfig(text);
-    await this.setAliasesInShell(aliases, shellService, loginService);
-    return { aliases, errors };
-  }
-
+export default class AliasImportService {
   /**
    * Parse a git config text and extract aliases from the [alias] section.
    * Accepts either a full .gitconfig or just a [alias] block.
@@ -104,62 +89,5 @@ class AliasImportService {
 
     return { aliases, errors };
   }
-
-  /**
-   * Apply aliases into the shell using `git config --global alias.* VALUE`.
-   * Ensures the shell is logged in if a ShellLoginService is provided.
-   *
-   * @param {Record<string,string>} aliases
-   * @param {ShellService2} shellService
-   * @param {ShellLoginService} [loginService]
-   * @returns {Promise<void>}
-   */
-  async setAliasesInShell(aliases, shellService, loginService) {
-    if (!aliases || Object.keys(aliases).length === 0) return;
-
-    // Ensure we have a shell service
-    if (!shellService || typeof shellService.post !== 'function') {
-      throw new Error('A valid ShellService instance is required');
-    }
-
-    // Ensure login if we can
-    if (loginService && !loginService.getLoginStatus()) {
-      await new Promise((resolve) => {
-        loginService.startLogin(() => resolve());
-      });
-    }
-
-    // Compose commands in a single batch to reduce iframe chatter
-    const cmd = this._buildGitConfigCommands(aliases);
-    shellService.sendInput(cmd);
-  }
-
-  /**
-   * Build a single shell input string that sets all aliases and echoes a marker.
-   * @param {Record<string,string>} aliases
-   * @returns {string}
-   * @private
-   */
-  _buildGitConfigCommands(aliases) {
-    const lines = [];
-    for (const [name, value] of Object.entries(aliases)) {
-      const escaped = this._singleQuote(value);
-      lines.push(`git config --global alias.${name} '${escaped}'`);
-    }
-    // Add a newline after final echo to ensure execution
-    lines.push("echo 'ALIASES_IMPORTED'\n");
-    return lines.join('\n');
-  }
-
-  /**
-   * Escape single quotes for a single-quoted shell string.
-   * @param {string} s
-   * @returns {string}
-   * @private
-   */
-  _singleQuote(s) {
-    return String(s).replace(/'/g, `'"'"'`);
-  }
 }
 
-export default AliasImportService;

@@ -6,7 +6,7 @@ import ToolboxDrawer from './toolbox_drawer.component';
 import Footer from './footer.component';
 import useAppStore from './app.store';
 import ImportAliasesModal from './import_aliases_modal.component';
-import AliasImportService from './services/alias_import.service';
+import AliasImportService from './services/alias_parse.service';
 import {IframeWrapper} from "./model/iframe_wrapper";
 import {LoginOperation} from "./model/operations/login.operation";
 import {RunExerciseScriptOperation} from "./model/operations/run_exercise_script.operation";

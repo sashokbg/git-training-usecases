@@ -3,9 +3,8 @@
 ## Project Structure & Module Organization
 - `scripts/`: POSIX shell exercises. Each script is related to an exercise. Each exercise will initialize an empty git repository and execute a series of commands that will put the user in a specific scenario, asking them to fix the situation.
 - `web/`: React + Vite UI. See `web/*.jsx` and `web/vite.config.js`.
-- `web/exercises.schema.json`: Exercise data schema.
-- `web/exercises.db.json`: The list of exercises (file database).
-- `file_server/`: Small Express server (`index.js`) used by the training environment.
+- `web/resources/exercise.schema.json`: Exercise data schema.
+- `web/resources/exercises.db.json`: The list of exercises (file database).
 - `docker/` + `docker-compose.yaml`: ShellInABox terminal, user setup, and services wiring.
 - `docs/architecture.md`: Overall architecture and technical explanations.
 - `docs/guide.md`: A user guide explaining how the program works.

@@ -1,18 +1,17 @@
 import React, {useEffect, useRef, useState} from 'react';
-import './app.css';
-import exercises from './exercises.db.json';
+import './app.component.css';
+import exercises from '../../resources/exercises.db.json';
 import HintsComponent from './hints.component';
 import ToolboxDrawer from './toolbox_drawer.component';
 import Footer from './footer.component';
-import useAppStore from './app.store';
+import useAppStore from '../model/app.store';
 import ImportAliasesModal from './import_aliases_modal.component';
-import AliasImportService from './services/alias_parse.service';
-import {IframeWrapper} from "./model/iframe_wrapper";
-import {LoginOperation} from "./model/operations/login.operation";
-import {RunExerciseScriptOperation} from "./model/operations/run_exercise_script.operation";
-import {EditorOperation} from "./model/operations/editor.operation";
-import {AliasImportOperation} from "./model/operations/alias_import.operation";
+import AliasImportService from '../services/alias_parse.service';
+import {IframeWrapper} from "../model/iframe_wrapper";
+import {LoginOperation} from "../model/operations/login.operation";
+import {RunExerciseScriptOperation} from "../model/operations/run_exercise_script.operation";
 import {delay, mergeMap, of} from "rxjs";
+import {EditorOperation} from "../model/operations/editor.operation";
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);

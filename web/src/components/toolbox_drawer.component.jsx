@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
-import useAppStore from './app.store';
-import {IframeWrapper} from './model/iframe_wrapper';
-import {LoginOperation} from './model/operations/login.operation';
-import {ReadEditorOperation} from './model/operations/read_editor.operation';
+import useAppStore from '../model/app.store';
+import {IframeWrapper} from '../model/iframe_wrapper';
+import {LoginOperation} from '../model/operations/login.operation';
+import {ReadEditorOperation} from '../model/operations/read_editor.operation';
 import {delay, mergeMap, of} from 'rxjs';
 
 const ToolboxDrawer = ({

@@ -1,7 +1,7 @@
 import {SHELL_URL} from "../configs";
 import {delay, from, Subject, Subscription, tap} from "rxjs";
 import {messageChannel$} from "../message_channel";
-import useAppStore from "../../app.store";
+import useAppStore from "../../model/app.store";
 
 const COMMAND_TIMEOUT = 5000;
 

@@ -5,7 +5,9 @@ export const useAppStore = create((set) => ({
   loginInProgress: false,
   showAliasImport: false,
   backgroundOpInProgress: false,
+  currentEditor: "",
 
+  setCurrentEditor: (value) => set({ currentEditor: value }),
   setShowAliasImport: (value) => set({ showAliasImport: value }),
   setIsLoggedIn: (value) => set({ isLoggedIn: value }),
   setLoginInProgress: (value) => set({ loginInProgress: value }),

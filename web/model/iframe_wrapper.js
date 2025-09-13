@@ -83,8 +83,10 @@ export class IframeWrapper {
       catchError((err) => {
         clearTimeout(autoClose)
         console.error('Error executing in background:', err);
-        document.body.removeChild(el);
-        el.remove();
+        if (document.body.contains(el)) {
+          document.body.removeChild(el);
+          el.remove();
+        }
       })
     );
   }

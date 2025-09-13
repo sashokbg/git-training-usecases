@@ -3,19 +3,28 @@
   "version": "1.0.0",
   "main": "vite.config.js",
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:generate": "npx playwright codegen http://localhost:5173"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
+  "devDependencies": {
+    "@playwright/test": "^1.41.2",
+    "@types/node": "^24.3.3"
+  },
   "dependencies": {
     "@reactivex/rxjs": "^6.6.7",
     "@vitejs/plugin-react": "^5.0.2",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "rxjs": "^7.8.2",
-    "vite": "^7.1.4",
+    "vite": "^7.1.5",
     "zustand": "^5.0.8"
   }
 }

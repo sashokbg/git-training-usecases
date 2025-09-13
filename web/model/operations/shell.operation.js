@@ -14,12 +14,13 @@ export class ShellOperation {
   constructor(iframe, commands) {
     this.iframe = iframe;
     /**
-     * @type {Subject<boolean>}
+     * @type {Subject<any>}
      */
     this.isDone$ = new Subject();
     this.subscriptions = new Subscription();
     this._commands = commands;
     this.timeoutId = 0;
+    this.outputBuffer = '';
   }
 
   /**
@@ -73,8 +74,8 @@ export class ShellOperation {
     }
   }
 
-  _complete() {
-    this.isDone$.next(true);
+  _complete(value = true) {
+    this.isDone$.next(value);
     this.isDone$.complete();
     this.subscriptions.unsubscribe();
     clearTimeout(this.timeoutId);

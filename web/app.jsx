@@ -18,8 +18,6 @@ function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
   const {isLoggedIn, loginInProgress, setIsLoggedIn, setLoginInProgress} = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
-  const [editor, setEditor] = useState('vim');
-  const [pendingEditor, setPendingEditor] = useState(null);
   const [showAliasModal, setShowAliasModal] = useState(false);
   const [aliasImportBusy, setAliasImportBusy] = useState(false);
   const [aliasImportResult, setAliasImportResult] = useState(null);
@@ -30,13 +28,6 @@ function App() {
 
   const url = "http://localhost:5173/shell";
   const currentExercise = exercises[currentExerciseIndex];
-
-  useEffect(() => {
-    const saved = localStorage.getItem('editor');
-    if (saved === 'nano' || saved === 'vim') {
-      setEditor(saved);
-    }
-  }, [url]);
 
   useEffect(() => {
     if (isLoggedIn && exerciseStarted) {
@@ -134,7 +125,8 @@ function App() {
           return new EditorOperation(iframe, newEditor).execute()
         }));
     }).subscribe(() => {
-      setEditor(newEditor);
+      console.log('Editor set to', newEditor);
+      document.dispatchEvent(new CustomEvent('editor-set', {detail: newEditor}));
       localStorage.setItem('editor', newEditor);
     });
   };
@@ -142,7 +134,7 @@ function App() {
   return (
     <div className="app">
       <div className="sidebar">
-        <h3 className="sidebar-title">Git Exercises</h3>
+        <h3 className="sidebar-title">Exercises</h3>
         {exercises.map((exercise, index) => (
           <div
             key={index}

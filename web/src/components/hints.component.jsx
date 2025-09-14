@@ -65,15 +65,15 @@ const HintsComponent = ({ exerciseTitle, hints }) => {
     }
 
     return (
-        <div className="hints-component">
-            <div className="hints-header">
+        <div className="toggle-box-container">
+            <div className="toggle-box-header">
                 <button
-                    className="hints-toggle"
+                    className="toggle-box-button"
                     onClick={toggleHints}
                 >
                     <span className="toggle-icon">{hintsExpanded ? '▼' : '▶'}</span>
                     <span className="hints-title">Hints</span>
-                    <span className="hints-counter">({seenHints.size}/{hints.length})</span>
+                    <span className="toggle-box-counter">({seenHints.size}/{hints.length})</span>
                 </button>
 
                 {hasSeenHints && (

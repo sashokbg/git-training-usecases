@@ -22,12 +22,12 @@ const ChecksComponent = ({ checks, evaluationResult, evaluating, onEvaluate }) =
   }
 
   return (
-    <div className="checks-component">
-      <div className="checks-header">
-        <button className="checks-toggle" onClick={() => setExpanded(!expanded)}>
+    <div className="toggle-box-container">
+      <div className="toggle-box-header">
+        <button className="toggle-box-button" onClick={() => setExpanded(!expanded)}>
           <span className="toggle-icon">{expanded ? '▼' : '▶'}</span>
           <span className="checks-title">Checks</span>
-          <span className="checks-counter">({passed}/{total})</span>
+          <span className="toggle-box-counter">({passed}/{total})</span>
         </button>
 
         <button className="run-checks-btn" onClick={() => { if (!expanded) setExpanded(true); onEvaluate && onEvaluate(); }} disabled={evaluating}>

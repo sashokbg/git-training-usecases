@@ -32,16 +32,24 @@
           "type": "string"
         }
       },
-      "expected": {
-        "type": "object",
-        "properties": {
-          "script": {
-            "type": "string",
-            "description": "A script that can be executed to verify if the exercise was completed successfully."
-          },
-          "explanations": {
-            "type": "array",
-            "items": {
+      "checks": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "User friendly name of the evaluation"
+            },
+            "explanation": {
+              "type": "array",
+              "description": "A detailed explanation of the evaluation.",
+              "items": {
+                "type": "string"
+              }
+            },
+            "command": {
+              "description": "The shell command to run for the evaluation. The return code should be 0",
               "type": "string"
             }
           }

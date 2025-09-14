@@ -21,6 +21,7 @@
 - JS/React: 2-space indent, camelCase variables, PascalCase components, but snake case file names (e.g., `hints.component.jsx`). Keep components small and pure.
 - Filenames: React components `*.jsx`; CSS as `*.css`. Keep exercise data in `web/*.json` consistent with `web/exercise.shema.json`.
 - Do not put comments that do not add anything significant for understanding the code.
+- Avoid short variable names example: instead of "m", use "match", instead of "idx", use "index" etc
 
 ## Testing Guidelines
 - To determine later

@@ -58,11 +58,7 @@ export class IframeWrapper {
     const el = document.createElement('iframe');
     el.src = SHELL_URL;
     el.setAttribute('aria-hidden', 'true');
-    // el.style.position = 'absolute';
-    // el.style.width = '0';
-    // el.style.height = '0';
-    // el.style.border = '0';
-    // el.style.opacity = '0';
+    el.style.display = 'none';
     document.body.appendChild(el);
 
     const ref = React.createRef()

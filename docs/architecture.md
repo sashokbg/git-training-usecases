@@ -1,17 +1,31 @@
 # Learn Git Project Architecture
 
-## Questions Database
+## Adding New Questions
 
-Questions are formulated using a JS file found under web/exercises.db.js
+Questions are formulated using a JS file found under `web/resources/exercises.db.json`
+Adding new questions is done by adding a new entry to the list.
 
+The question structure is described by the json schema found under `web/resources/exercise.schema.json`
 Each question entry should have the following fields:
 
-- title: User friendly title for the exercise
-- description: Detailed explanation of what the exercise is about
-- command_history: The list of commands that were previously run (optional)
-- script: the associated shell script that should be run when the question is loaded and started.
-- hints: A list of progressive hints that should be displayed to the user one by one.
-- expected: A description of what is expected if the exercise has been successfully completed.
+## Exercise Evaluation
+
+Exercises can be evaluated in one of two ways:
+
+### Script-based assertions (checks)
+
+- Each exercise defines `checks[]` in `web/resources/exercises.db.json`. A check contains a shell `command` to validate, plus optional `name` and `explanation` for the UI.
+- On Evaluate, the app logs into a background shell and runs a compact script that:
+  - `cd`’s into the exercise repo directory (e.g., `workspace/<exercise-name>`)
+  - Executes each check in sequence (subshell), captures its return code, then prints a sentinel line: `LG_EVAL_RC:<index>:<rc>`
+- The frontend accumulates shell output and parses these sentinel lines. For each `<index>`, a result is set to pass (`rc == 0`) or fail. Checks do not short‑circuit; every check produces a result.
+
+### AI-based assertions
+
+THIS SECTION IS NOT YET IMPLEMENTED
+
+- A list of AI instructions, allowing an Agent to grade the exercise based on file system and git state.
+
 
 ## Shell Emulator
 
@@ -92,7 +106,7 @@ The pre-installed editors are vim and nano
 
 See Background Operations
 
-## Git Scripts
+## How Git Scripts Work
 
 Here are some technical details on how the exercise shell scripts work:
 
@@ -112,3 +126,7 @@ aliases are imported in the /home/learn-git/.gitconfig file.
 ## App State Store
 
 The app uses a centralized state store implemented using Zustand
+
+## Testing
+
+Testing is done using end-to-end tests written in playwright.

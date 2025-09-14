@@ -14,11 +14,13 @@
       "What happens if you close the terminal window without any changes ?",
       "What happens if you delete the commit message ?"
     ],
-    "expected": {
-      "explanations": [
-        "The user should have properly aborted the merge. No merge commits should be present in the history."
-      ]
-    }
+    "checks": [
+      {
+        "name": "Check git history",
+        "explanation": ["Check the git history to ensure that the merge was aborted."],
+        "command": "test -z \"$(git lg | grep \"Merge branch 'feat' - Git Master (HEAD -> main)\")\""
+      }
+    ]
   },
   {
     "exercise_title": "Accidental Merge",
@@ -32,9 +34,7 @@
     "script": "accidental_merge.sh",
     "hints": [
     ],
-    "expected": {
-      "explanations": []
-    }
+    "checks": []
   },
   {
     "exercise_title": "Rebase Conflict Resolution",
@@ -54,11 +54,11 @@
       "Continue the rebase process with 'git rebase --continue'.",
       "If you want to abort the rebase, use 'git rebase --abort'."
     ],
-    "expected": {
-      "explanations": [
-        "The user should successfully resolve the conflict and complete the rebase, resulting in a clean linear history with the feat branch rebased onto main."
-      ]
-    }
+    "checks": [
+      {
+        "explanation": ["The user should successfully resolve the conflict and complete the rebase, resulting in a clean linear history with the feat branch rebased onto main."]
+      }
+    ]
   },
   {
     "exercise_title": "Accidental Commit of Sensitive Data",
@@ -75,12 +75,12 @@
       "How do you remove the commit from both local and remote branch ?",
       "How about the git objects ?"
     ],
-    "expected": {
-      "script": "for f in $(find .git/objects -type f | sed -e 's|.git/objects||g' -e 's|/||g'); do git cat-file -p $f; done | grep 'pa$$word'",
-      "explanations": [
-        "The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."
-      ]
-    }
+    "checks": [
+      {
+        "command": "for f in $(find .git/objects -type f | sed -e 's|.git/objects||g' -e 's|/||g'); do git cat-file -p $f; done | grep 'pa$$word'",
+        "explanation": ["The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."]
+      }
+    ]
   },
   {
     "exercise_title": "Pulling From another Repository",
@@ -97,11 +97,13 @@
     ],
     "script": "cannot_merge_unreleated_history.sh",
     "hints": [],
-    "expected": {
-      "explanations": [
-        "Recover the code found in the 'second' remote",
-        "Your worktree should contain a file called 'file_other.txt'."
-      ]
-    }
+    "checks": [
+      {
+        "explanation": [
+          "Recover the code found in the 'second' remote",
+          "Your worktree should contain a file called 'file_other.txt'."
+        ]
+      }
+    ]
   }
 ]

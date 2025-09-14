@@ -12,6 +12,9 @@ import {LoginOperation} from "../model/operations/login.operation";
 import {RunExerciseScriptOperation} from "../model/operations/run_exercise_script.operation";
 import {delay, mergeMap, of} from "rxjs";
 import {EditorOperation} from "../model/operations/editor.operation";
+import {EvaluateOperation} from "../model/operations/evaluate.operation";
+import {AliasImportOperation} from "../model/operations/alias_import.operation";
+import ChecksComponent from './checks.component';
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
@@ -20,9 +23,11 @@ function App() {
   const [showAliasModal, setShowAliasModal] = useState(false);
   const [aliasImportBusy, setAliasImportBusy] = useState(false);
   const [aliasImportResult, setAliasImportResult] = useState(null);
+  const [evaluating, setEvaluating] = useState(false);
+  const [evaluationResult, setEvaluationResult] = useState(null);
+  const [evaluationError, setEvaluationError] = useState(null);
 
   const shellIframeRef = useRef(null);
-
   const [iframeWrapper, setIframeWrapper] = useState(new IframeWrapper(shellIframeRef));
 
   const url = "http://localhost:5173/shell";
@@ -130,6 +135,49 @@ function App() {
     });
   };
 
+  const handleEvaluate = () => {
+    setEvaluationError(null);
+    setEvaluationResult(null);
+
+    const checks = Array.isArray(currentExercise.checks) ? currentExercise.checks : [];
+    const runnableChecks = checks.filter(c => c && typeof c.command === 'string' && c.command.trim());
+    const commands = runnableChecks.map(c => c.command);
+    const names = runnableChecks.map((c, idx) => c.name && c.name.trim() ? c.name : `Check ${idx + 1}`);
+
+    if (!commands.length) {
+      setEvaluationResult({ passed: 0, total: 0, results: [] });
+      return;
+    }
+
+    const script = String(currentExercise.script || '');
+    const repoName = script.replace(/\.sh$/, '');
+    const repoDir = `workspace/${repoName}`;
+
+    setEvaluating(true);
+    IframeWrapper.executeInBackground((iframe) => {
+      return of(null).pipe(
+        delay(100),
+        mergeMap(() => new LoginOperation(iframe).execute()),
+        delay(100),
+        mergeMap(() => new EvaluateOperation(iframe, repoDir, commands).execute()),
+      );
+    }).subscribe({
+      next: (res) => {
+        setEvaluationResult({ ...res, names });
+      },
+      error: (err) => {
+        setEvaluationError(String(err && err.message ? err.message : err));
+        setEvaluating(false);
+      },
+      complete: () => {
+        setEvaluating(false);
+      }
+    });
+  };
+
+  const allChecks = Array.isArray(currentExercise.checks) ? currentExercise.checks : [];
+  const runnableChecks = allChecks.filter(c => c && typeof c.command === 'string' && c.command.trim());
+
   return (
     <div className="app">
       <div className="sidebar">
@@ -214,25 +262,18 @@ function App() {
 
           {exerciseStarted && (
             <div className="exercise-actions">
-              <button className="submit-button">
-                Submit Solution
-              </button>
-
-              {currentExercise.expected && currentExercise.expected.explanations && (
-                <div className="expected-outcome">
-                  <h4>Expected Outcome:</h4>
-                  {Array.isArray(currentExercise.expected.explanations)
-                    ? (
-                      <ul>
-                        {currentExercise.expected.explanations.map((exp, idx) => (
-                          <li key={idx}>{exp}</li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>{currentExercise.expected.explanations}</p>
-                    )}
+              {evaluationError && (
+                <div className="evaluation-result" style={{ marginBottom: '0.75rem', color: '#b00020' }}>
+                  ❌ Evaluation error: {evaluationError}
                 </div>
               )}
+
+              <ChecksComponent
+                checks={runnableChecks}
+                evaluationResult={evaluationResult}
+                evaluating={evaluating}
+                onEvaluate={handleEvaluate}
+              />
             </div>
           )}
 

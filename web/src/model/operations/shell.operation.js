@@ -28,7 +28,7 @@ export class ShellOperation {
    */
   execute() {
     this.timeoutId = setTimeout(() => {
-      this.isDone$.error(new Error('Command timed out'))
+      this.isDone$.error(new Error(`Command timed out`))
     }, COMMAND_TIMEOUT)
 
     useAppStore.getState().setBackgroundOpInProgress(true)

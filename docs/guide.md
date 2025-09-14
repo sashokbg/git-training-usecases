@@ -26,3 +26,7 @@ A pop-in will show with a text box. Copy and paste your entire .gitconfig file i
 
 If you put your entire .gitconfig file in, the field, the program will only import the `[alias]` section.
 
+## Exercise Evaluation
+
+After completing the exercise, you can run the automatic evaluation by clicking on the "Evaluate" button.
+The evaluation result will be shown in under your exercise with a green checkmark if the exercise is correct.

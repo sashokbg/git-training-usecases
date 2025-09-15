@@ -27,6 +27,12 @@ THIS SECTION IS NOT YET IMPLEMENTED
 - A list of AI instructions, allowing an Agent to grade the exercise based on file system and git state.
 
 
+### Marking Exercises as Complete
+
+When all checks are passed, the exercise is marked as complete in local storage.
+Completed exercises are shown in green.
+Clicking on the "start" button of a completed exercise will un-mark is as complete.
+
 ## Shell Emulator
 
 To perform the exercise, the user is provided with a shell which is embedded in the browser via an iframe.

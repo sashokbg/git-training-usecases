@@ -62,6 +62,28 @@
     transform: translateX(2px);
 }
 
+/* Completed exercise: highlight in green */
+.sidebar-item.completed {
+    background-color: #2e7d32;
+    border-color: #43a047;
+    color: #e8f5e9;
+}
+
+.sidebar-item.completed .exercise-number {
+    color: #c8e6c9;
+}
+
+.sidebar-item.completed:hover {
+    background-color: #388e3c;
+    border-color: #4caf50;
+}
+
+.sidebar-item.active.completed {
+    background-color: #1b5e20;
+    border-color: #2e7d32;
+    box-shadow: 0 2px 12px rgba(76, 175, 80, 0.4);
+}
+
 .exercise-number {
     font-weight: bold;
     margin-right: 12px;

@@ -18,7 +18,15 @@ import ChecksComponent from './checks.component';
 
 function App() {
   const [currentExerciseIndex, setCurrentExerciseIndex] = useState(0);
-  const {isLoggedIn, loginInProgress, setIsLoggedIn, setLoginInProgress} = useAppStore();
+  const {
+    isLoggedIn,
+    loginInProgress,
+    setIsLoggedIn,
+    setLoginInProgress,
+    completedExercises,
+    markExerciseComplete,
+    unmarkExerciseComplete,
+  } = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
   const [showAliasModal, setShowAliasModal] = useState(false);
   const [aliasImportBusy, setAliasImportBusy] = useState(false);
@@ -65,6 +73,12 @@ function App() {
   };
 
   const handleStartExercise = () => {
+    // If this exercise was previously completed, un-mark it on Start
+    const title = String(currentExercise.exercise_title || "");
+    if (title && completedExercises && completedExercises[title]) {
+      unmarkExerciseComplete(title);
+    }
+
     setExerciseStarted(true);
     setIsLoggedIn(false);
     setLoginInProgress(false);
@@ -182,6 +196,15 @@ function App() {
     }).subscribe({
       next: (res) => {
         setEvaluationResult({ ...res, names });
+        // Mark as complete when all checks pass (and there is at least one check)
+        const total = Number(res && res.total || 0);
+        const passed = Number(res && res.passed || 0);
+        if (total > 0 && passed === total) {
+          const t = String(currentExercise.exercise_title || "");
+          if (t) {
+            markExerciseComplete(t);
+          }
+        }
       },
       error: (err) => {
         setEvaluationError(String(err && err.message ? err.message : err));
@@ -203,11 +226,14 @@ function App() {
         {exercises.map((exercise, index) => (
           <div
             key={index}
-            className={`sidebar-item ${index === currentExerciseIndex ? 'active' : ''}`}
+            className={`sidebar-item ${index === currentExerciseIndex ? 'active' : ''} ${completedExercises && completedExercises[exercise.exercise_title] ? 'completed' : ''}`}
             onClick={() => handleExerciseSelect(index)}
           >
             <span className="exercise-number">{index + 1}.</span>
             <span className="exercise-title-short">{exercise.exercise_title}</span>
+            {completedExercises && completedExercises[exercise.exercise_title] && (
+              <span title="Completed" style={{ marginLeft: '8px' }}>✅</span>
+            )}
           </div>
         ))}
       </div>

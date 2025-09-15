@@ -16,6 +16,11 @@
     ],
     "checks": [
       {
+        "name": "Check commit message",
+        "explanation": ["Check that the user has closed the editor with the commit message prompt."],
+        "command": "test $(ps aux | grep -c \".git/MERGE_MSG\") -lt 2"
+      },
+      {
         "name": "Check git history",
         "explanation": ["Check the git history for presence of git merge commits."],
         "command": "test -z \"$(git lg | grep \"Merge branch 'feat' - Git Master (HEAD -> main)\")\""
@@ -37,7 +42,7 @@
       "Use 'git lg' to check the history of the commits.",
       "Be careful not to loose any files, or any commits",
       "Git reflog is a trap",
-      "Try resetting your HEAD"
+      "Try resetting your HEAD~1"
     ],
     "checks": [
       {

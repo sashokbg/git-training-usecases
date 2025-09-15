@@ -46,6 +46,24 @@ function App() {
     setLoginInProgress(false);
   };
 
+  const handleRestartExercise = () => {
+    // Clear hint progress for current exercise
+    const title = String(currentExercise.exercise_title || "");
+    const hints = Array.isArray(currentExercise.hints) ? currentExercise.hints : [];
+    for (let i = 0; i < hints.length; i++) {
+      const key = `${title}.hint[${i}].seen`;
+      localStorage.removeItem(key);
+    }
+
+    // Reset evaluation state
+    setEvaluationResult(null);
+    setEvaluationError(null);
+    setEvaluating(false);
+
+    // Start the exercise as if the Start button was pressed
+    handleStartExercise();
+  };
+
   const handleStartExercise = () => {
     setExerciseStarted(true);
     setIsLoggedIn(false);
@@ -233,6 +251,16 @@ function App() {
 
           {exerciseStarted && (
             <div className="exercise-content-workspace">
+              <div className="workspace-toolbar">
+                <button
+                  className="restart-button"
+                  id="restart-exercise-btn"
+                  title="Restart the exercise"
+                  onClick={handleRestartExercise}
+                >
+                  Restart
+                </button>
+              </div>
               {loginInProgress && (
                 <div className="login-status">
                   <p>🔄 Logging in to shell...</p>

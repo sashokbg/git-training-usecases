@@ -30,3 +30,10 @@ If you put your entire .gitconfig file in, the field, the program will only impo
 
 After completing the exercise, you can run the automatic evaluation by clicking on the "Evaluate" button.
 The evaluation result will be shown in under your exercise with a green checkmark if the exercise is correct.
+
+## Restarting an Exercise
+
+You can restart an exercise at any point by clicking on the "Restart" button located above the shell screen in top right corner.
+
+Restarting an exercise will clear all the hints, checks and prepare a fresh new workspace for you to work on.
+

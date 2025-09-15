@@ -17,7 +17,7 @@
     "checks": [
       {
         "name": "Check git history",
-        "explanation": ["Check the git history to ensure that the merge was aborted."],
+        "explanation": ["Check the git history for presence of git merge commits."],
         "command": "test -z \"$(git lg | grep \"Merge branch 'feat' - Git Master (HEAD -> main)\")\""
       }
     ]
@@ -25,16 +25,37 @@
   {
     "exercise_title": "Accidental Merge",
     "exercise_description": [
-      "I worked on a feature and I wanted to rebase upon main",
-      "But instead I did a merge"
+      "I worked on a feature and I wanted to rebase my branch upon main,",
+      "But instead I accidentally did a merge.",
+      "I want to the merge and have a linear history."
     ],
     "command_history": [
       "git merge"
     ],
     "script": "accidental_merge.sh",
     "hints": [
+      "Use 'git lg' to check the history of the commits.",
+      "Be careful not to loose any files, or any commits",
+      "Git reflog is a trap",
+      "Try resetting your HEAD"
     ],
-    "checks": []
+    "checks": [
+      {
+        "name": "Check git history",
+        "explanation": ["Check the git history for presence of git merge commits."],
+        "command": "test -z \"$(git lg | grep \"Merge branch\")\""
+      },
+      {
+        "name": "Check files",
+        "explanation": ["Check that are all files are present in the working tree."],
+        "command": "for f in file1.txt file2.txt file3.txt; do [ -f \"$f\" ] || { echo \"Missing $f\"; exit 1; }; done\n"
+      },
+      {
+        "name": "Check commits",
+        "explanation": ["Check all three commits are present 'first', 'second' and 'third'"],
+        "command": "test -n \"$(git log | grep 'third')\""
+      }
+    ]
   },
   {
     "exercise_title": "Rebase Conflict Resolution",

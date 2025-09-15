@@ -8,19 +8,19 @@ REPO_NAME="$(basename $0 '.sh')"
 init_repo $REPO_NAME
 cd workspace/$REPO_NAME
 
-touch file1.txt
+echo "file1" > file1.txt
 git add file1.txt
 git commit -m "first"
 
 git branch feat
 
-touch file2.txt
+echo "file2" > file2.txt
 git add file2.txt
 git commit -m "second"
 
 git checkout feat
 
-touch file3.txt
+echo "file3" > file3.txt
 git add file3.txt
 git commit -m "third"
 

@@ -202,22 +202,6 @@
     border-color: #007acc;
 }
 
-.output-section {
-    margin-top: 20px;
-}
-
-.output {
-    width: 640px;
-    height: 300px;
-    overflow: scroll;
-    border: 2px solid #999;
-    padding: 10px;
-    background-color: #f5f5f5;
-    font-family: monospace;
-    white-space: pre-wrap;
-    word-wrap: break-word;
-}
-
 .exercise-content {
     flex: 1;
     padding: 2rem 1rem;
@@ -239,7 +223,6 @@
     text-decoration: none;
 }
 
-/* Modal */
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -351,6 +334,41 @@
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
+}
+
+/* Toolbar above the shell (right-aligned) */
+.workspace-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 0 0 8px 0;
+}
+
+.restart-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0.5rem 1rem;
+    background: linear-gradient(135deg, #e53935, #d32f2f);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(211, 47, 47, 0.35);
+    transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.restart-button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.45);
+}
+
+.restart-button:active {
+    transform: translateY(0);
+    filter: brightness(0.98);
 }
 
 /* Add header styles for the main content section */

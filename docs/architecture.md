@@ -20,6 +20,10 @@ Exercises can be evaluated in one of two ways:
   - Executes each check in sequence (subshell), captures its return code, then prints a sentinel line: `LG_EVAL_RC:<index>:<rc>`
 - The frontend accumulates shell output and parses these sentinel lines. For each `<index>`, a result is set to pass (`rc == 0`) or fail. Checks do not short‑circuit; every check produces a result.
 
+### Reset Exerecise Status
+
+When the user clicks on the "reset" button, the exercises are reset by cleaning the local storage.
+
 ### AI-based assertions
 
 THIS SECTION IS NOT YET IMPLEMENTED

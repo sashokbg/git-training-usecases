@@ -10,13 +10,13 @@ cd workspace/$REPO_NAME
 
 git branch feat
 
-echo "content" > file1.txt
+echo "first" > file1.txt
 git add .
 git commit -m "edited file1"
 
 git checkout feat
 
-echo "other content" > file1.txt
+echo "second" > file1.txt
 git add .
 git commit -m "I too edited file1"
 

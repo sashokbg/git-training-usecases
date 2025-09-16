@@ -34,6 +34,7 @@ function App() {
   const [evaluating, setEvaluating] = useState(false);
   const [evaluationResult, setEvaluationResult] = useState(null);
   const [evaluationError, setEvaluationError] = useState(null);
+  const [showResetConfirm, setShowResetConfirm] = useState(false);
 
   const shellIframeRef = useRef(null);
   const [iframeWrapper, setIframeWrapper] = useState(new IframeWrapper(shellIframeRef));
@@ -219,10 +220,28 @@ function App() {
   const allChecks = Array.isArray(currentExercise.checks) ? currentExercise.checks : [];
   const runnableChecks = allChecks.filter(c => c && typeof c.command === 'string' && c.command.trim());
 
+  const handleResetAll = () => {
+    try {
+      localStorage.clear();
+    } catch (e) {
+      // ignore
+    }
+    window.location.reload();
+  };
+
   return (
     <div className="app">
       <div className="sidebar">
         <h3 className="sidebar-title">Exercises</h3>
+        <div className="sidebar-actions">
+          <button
+            className="reset-all-button"
+            title="Reset all exercises (clears local data)"
+            onClick={() => setShowResetConfirm(true)}
+          >
+            Reset
+          </button>
+        </div>
         {exercises.map((exercise, index) => (
           <div
             key={index}
@@ -349,6 +368,17 @@ function App() {
         busy={aliasImportBusy}
         result={aliasImportResult}
       />
+      {showResetConfirm && (
+        <div className="confirm-overlay" role="dialog" aria-modal="true">
+          <div className="confirm-panel">
+            <p>Reset all exercises? This clears local progress and seen hints.</p>
+            <div className="confirm-buttons">
+              <button className="cancel" onClick={() => setShowResetConfirm(false)}>Cancel</button>
+              <button className="confirm" onClick={handleResetAll}>Yes, Reset</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

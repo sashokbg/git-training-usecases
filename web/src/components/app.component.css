@@ -44,6 +44,32 @@
     box-sizing: border-box;
 }
 
+/* Sidebar actions (e.g., Reset) */
+.sidebar-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+}
+
+.reset-all-button {
+    padding: 6px 10px;
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.reset-all-button:hover {
+    background-color: #777;
+}
+
+.reset-all-button:active {
+    transform: translateY(1px);
+}
+
 .sidebar-item:hover {
     background-color: #4a4a4a;
     border-color: #007acc;

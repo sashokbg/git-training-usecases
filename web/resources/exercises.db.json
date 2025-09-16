@@ -82,7 +82,9 @@
     ],
     "checks": [
       {
-        "explanation": ["The user should successfully resolve the conflict and complete the rebase, resulting in a clean linear history with the feat branch rebased onto main."]
+        "name": "Check file content",
+        "explanation": ["The file content should contain both the text from the first and second commits"],
+        "command": "grep -q 'first' text1.txt && grep -q 'second' text1.txt"
       }
     ]
   },

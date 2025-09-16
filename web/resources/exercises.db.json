@@ -82,9 +82,14 @@
     ],
     "checks": [
       {
+        "name": "Check commit history",
+        "explanation": ["After rebasing all commits should be present in the history"],
+        "command": "for s in \"I too edited file1\" \"edited file1\"; do git log --pretty=%s | grep -Fxq \"$s\" || { echo \"Missing commit: $s\"; exit 1; }; done"
+      },
+      {
         "name": "Check file content",
         "explanation": ["The file content should contain both the text from the first and second commits"],
-        "command": "grep -q 'first' text1.txt && grep -q 'second' text1.txt"
+        "command": "grep -q 'first' file1.txt && grep -q 'second' file1.txt"
       }
     ]
   },

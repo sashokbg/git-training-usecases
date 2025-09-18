@@ -284,5 +284,39 @@
         "command": "git log -1 --pretty=%s HEAD~2 | grep -q \"initial commit\""
       }
     ]
+  },
+  {
+    "exercise_title": "Edit Second-to-Last Commit",
+    "exercise_description": [
+      "I did multiple commits but forgot to include a file in the previous (not last) commit.",
+      "I want to amend that earlier commit to include the missing file without changing later commits."
+    ],
+    "command_history": [
+    ],
+    "script": "edit_second_to_last_commit.sh",
+    "hints": [
+      "Use interactive rebase to edit a non-last commit: git rebase -i HEAD~2.",
+      "Change 'pick' to 'edit' for the commit you want to modify.",
+      "Stage the missing file: git add file_to_add_to_second_commit, then git commit --amend --no-edit.",
+      "Continue the rebase: git rebase --continue.",
+      "If already pushed, update the remote with git push --force-with-lease."
+    ],
+    "checks": [
+      {
+        "name": "Edited commit includes the file",
+        "explanation": ["Verify that the commit with subject 'second' now includes 'file_to_add_to_second_commit'."],
+        "command": "second=$(git log --pretty=%H:%s | awk -F: '$2==\"second\"{print $1; exit}'); test -n \"$second\" && git show --pretty= --name-only \"$second\" | grep -qx \"file_to_add_to_second_commit\""
+      },
+      {
+        "name": "Commit order preserved",
+        "explanation": ["Ensure the last two commit subjects remain 'third' then 'second'."],
+        "command": "test \"$(git log --pretty=%s -n2 | paste -sd , -)\" = \"third,second\""
+      },
+      {
+        "name": "Worktree contains the file",
+        "explanation": ["The file added to the 'second' commit should also exist in the current working tree."],
+        "command": "test -f file_to_add_to_second_commit"
+      }
+    ]
   }
 ]

@@ -184,5 +184,41 @@
       "Since git refs are stored as files in directory structure, having a ref called 'feat' will cause problems when we want to create a branch called 'feat/<name>'.",
       "One solution would be to rename your local branch to feature/mine"
     ]
+  },
+  {
+    "exercise_title": "Clean a WIP Commit",
+    "script": "clean_wip_commit.sh",
+    "exercise_description": [
+      "I worked on a feature",
+      "And I had to quickly change a branch so I performed a \"WIP\" commit at one point.",
+      "I want to clean this WIP commit before opening my merge request."
+    ],
+    "command_history": [
+      "echo \"content\" > file3.txt",
+      "git add .",
+      "git commit -m \"WIP\"",
+
+      "echo \"content\" > file4.txt",
+      "git add .",
+      "git commit -m \"third commit\""
+    ],
+    "hints": [
+      "Be careful, git reset HEAD~2 is not a good idea.",
+      "How about interactive rebase ?",
+      "git rebase -i HEAD~3, then prefix the commit with s to squash it.",
+      "Don't forget to push --force your branch."
+    ],
+    "checks": [
+      {
+        "name": "Check git history",
+        "explanation": ["Check the git history for presence of the WIP commit."],
+        "command": "test -z \"$(git lg | grep \"WIP\")\""
+      },
+      {
+        "name": "Check worktree files",
+        "explanation": ["Check that the file related to the WIP commit has not been lost."],
+        "command": "test -f file3.txt"
+      }
+    ]
   }
 ]

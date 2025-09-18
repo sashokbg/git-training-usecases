@@ -220,5 +220,34 @@
         "command": "test -f file3.txt"
       }
     ]
+  },
+  {
+    "exercise_title": "Detached Head",
+    "exercise_description": [
+      "I did a wrong checkout",
+      "Now my HEAD is in a detached state",
+      "I want to attach my HEAD to a branch so that further commits are kept"
+    ],
+    "command_history": [
+      "git checkout HEAD~1"
+    ],
+    "script": "detached_head.sh",
+    "hints": [
+      "Use 'git status' to see the 'detached HEAD' notice.",
+      "Simply reattach to an existing branch: git checkout main.",
+      "Avoid committing while detached or you may lose the commit reference."
+    ],
+    "checks": [
+      {
+        "name": "HEAD is attached to a branch",
+        "explanation": ["Ensure HEAD points to a branch, not a detached state."],
+        "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" != \"HEAD\""
+      },
+      {
+        "name": "No commits lost",
+        "explanation": ["Verify that the original 'second commit' still exists in the repository graph."],
+        "command": "git rev-list --all --pretty=%s | grep -q \"second commit\""
+      }
+    ]
   }
 ]

@@ -1,0 +1,11 @@
+version: '3'
+tasks:
+  dev:
+    desc: Run the app
+    cmds:
+      - docker compose up --build --force-recreate
+
+  build:
+    desc: Build docker image
+    cmds:
+      - docker build -t test -f docker/Dockerfile .

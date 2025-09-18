@@ -8,10 +8,12 @@ hex()
 }
 
 sudo="-G sudo"
-/usr/sbin/useradd -u 1001 -g 1000 -s /bin/zsh -d /home/learn-git -m -G sudo learn-git
+
+groupadd learn-git -g 1000
+useradd -u 1000 -g 1000 -s /bin/zsh -d /home/learn-git -m -G sudo learn-git
 echo "learn-git:learn-git" | /usr/sbin/chpasswd
 
-chown -R 1001:1000 /git /home/learn-git
+chown -R 1000:1000 /git /home/learn-git
 cp -R /files/* /files/.* /home/learn-git
 
 /usr/bin/shellinaboxd \

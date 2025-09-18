@@ -106,12 +106,20 @@
       "Use 'git lg' to view the commit history",
       "On what branches is it present ?",
       "How do you remove the commit from both local and remote branch ?",
-      "How about the git objects ?"
+      "How about the git objects ?",
+      "git-filter-repo --sensitive-data-removal --replace-text password.txt --force",
+      "git push --force --mirror origin"
     ],
     "checks": [
       {
+        "name": "Check git history for password",
         "command": "test $(git rev-list --objects --all | awk '{print $1}' | xargs -n1 git cat-file -p | grep 'pa$$word' -c) -eq 0",
         "explanation": ["The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."]
+      },
+      {
+        "name": "Check git history",
+        "explanation": ["Make sure other commits are not lost"],
+        "command": "git lg | grep -q \"some content - Git Master\""
       }
     ]
   },
@@ -129,14 +137,52 @@
       "git merge second/main"
     ],
     "script": "cannot_merge_unreleated_history.sh",
-    "hints": [],
+    "hints": [
+      "Next hint will reveal the solution",
+      "Use git merge --allow-unrelated-histories"
+    ],
     "checks": [
       {
+        "name": "Check worktree files",
         "explanation": [
-          "Recover the code found in the 'second' remote",
-          "Your worktree should contain a file called 'file_other.txt'."
-        ]
+          "The worktree should contain a file called 'file_other.txt' from the other remote."
+        ],
+        "command": "test -f file_other.txt"
+      },
+      {
+        "name": "Check git history",
+        "explanation": [
+          "The git history should contain a commit called 'other commit' from the other remote."
+        ],
+        "command": "git lg | grep -q \"other commit - Git Master\""
       }
+    ]
+  },
+  {
+    "exercise_title": "Ref Exists Error",
+    "command_history": [
+      "git branch feat/mine",
+      "git push origin feat/mine"
+    ],
+    "exercise_description": [
+      "I try to create a branch called \"feat/my_feat\"",
+      "But when I try to push it to the remote, it results in an error",
+      "! [remote rejected] feat/mine -> feat/mine (failed to update ref)"
+    ],
+    "script": "checkout_error_ref_exists.sh",
+    "checks": [
+      {
+        "name": "Check the local branch has been pushed to remote.",
+        "explanation": ["Verify that the user has successfully resolved the error and pushed the branch to the remote."],
+        "command": "test $(git branch -a | grep remotes/origin -c) -eq 2"
+      }
+    ],
+    "hints": [
+      "Is your local up-to date ?",
+      "Do a git fetch, and then git branch -a",
+      "Is there anything unusual in the branch name that came from the remote ?",
+      "Since git refs are stored as files in directory structure, having a ref called 'feat' will cause problems when we want to create a branch called 'feat/<name>'.",
+      "One solution would be to rename your local branch to feature/mine"
     ]
   }
 ]

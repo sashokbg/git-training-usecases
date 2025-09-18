@@ -1,5 +1,5 @@
 import {SHELL_URL} from "../configs";
-import {delay, from, Subject, Subscription, tap} from "rxjs";
+import {concatMap, delay, from, of, Subject, Subscription, tap} from "rxjs";
 import {messageChannel$} from "../message_channel";
 import useAppStore from "../../model/app.store";
 
@@ -37,7 +37,10 @@ export class ShellOperation {
     const readySub = this.iframe.getIframe().subscribe(() => {
       this.subscriptions.add(messageChannel$.subscribe(message => this._handleMessage(message)));
 
-      this.subscriptions.add(from(this._commands).pipe(delay(100))
+      this.subscriptions.add(from(this._commands).pipe(
+        delay(100),
+        concatMap(command => of(command).pipe(delay(250)))
+      )
         .subscribe(command => {
           const message = JSON.stringify({type: 'input', data: command});
           this.iframe.iframeRef.current.contentWindow.postMessage(message, SHELL_URL);

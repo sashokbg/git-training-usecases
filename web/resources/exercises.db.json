@@ -249,5 +249,40 @@
         "command": "git rev-list --all --pretty=%s | grep -q \"second commit\""
       }
     ]
+  },
+  {
+    "exercise_title": "Edit a Hunk",
+    "exercise_description": [
+      "I fixed two bugs that required editing the same file.",
+      "I want to split it into two different commits.",
+      "However, when I perform 'git add -p' the two changes are added together."
+    ],
+    "command_history": [
+      "git add -p"
+    ],
+    "script": "edit_hunk.sh",
+    "hints": [
+      "Use 'git add -p' to interactively stage changes.",
+      "If both lines show up as a single hunk, press 'e' to edit the patch.",
+      "In the patch editor remove the lines you don't want to stage yet, keep context lines intact, then save and exit.",
+      "Commit the staged part, then stage and commit the remaining change."
+    ],
+    "checks": [
+      {
+        "name": "Both changes present in file",
+        "explanation": ["Ensure both lines are present in the working tree after splitting into commits."],
+        "command": "grep -Fxq 'This line should be in first commit' file1.txt && grep -Fxq 'This line should be in a second commit' file1.txt"
+      },
+      {
+        "name": "Two separate commits for the changes",
+        "explanation": ["Verify that each of the last two commits adds exactly one of the lines (order does not matter)."],
+        "command": "( git show -U0 HEAD -- file1.txt | grep -Fq \"+This line should be in first commit\" && git show -U0 HEAD~1 -- file1.txt | grep -Fq \"+This line should be in a second commit\" ) || ( git show -U0 HEAD -- file1.txt | grep -Fq \"+This line should be in a second commit\" && git show -U0 HEAD~1 -- file1.txt | grep -Fq \"+This line should be in first commit\" )"
+      },
+      {
+        "name": "Initial commit preserved",
+        "explanation": ["Ensure the original 'initial commit' still exists behind the two new commits."],
+        "command": "git log -1 --pretty=%s HEAD~2 | grep -q \"initial commit\""
+      }
+    ]
   }
 ]

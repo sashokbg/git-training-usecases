@@ -330,7 +330,8 @@
       "unknown_commits_on_my_branch_01.png"
     ],
     "command_history": [
-      "git merge feat/2"
+      "git merge feat/2",
+      "git rebase -i HEAD~2"
     ],
     "script": "unknown_commits_on_my_branch.sh",
     "hints": [
@@ -354,6 +355,43 @@
         "name": "My work preserved",
         "explanation": ["Your own commit and file should remain after cleanup."],
         "command": "git lg | grep -q 'first commit' && test -f file3.txt"
+      }
+    ]
+  },
+  {
+    "exercise_title": "Get Most Recent Code from Main",
+    "exercise_description": [
+      "I am working on a feature branch.",
+      "A colleague pushed new commits to the main branch.",
+      "I want to get the latest changes from main onto my branch and then merge to main.",
+      "You need to keep the history linear and avoid unnecessary merge commits."
+    ],
+    "command_history": [
+      "git rebase origin/main"
+    ],
+    "script": "get_most_recent_code_from_main.sh",
+    "hints": [
+      "Use 'git lg' to inspect both your branch and main.",
+      "Fetch remote updates so 'origin/main' points to the newest commit.",
+      "Try rebasing your branch onto 'origin/main' to keep history linear.",
+      "Alternatively, you can merge 'origin/main' into your branch if history shape is not critical.",
+      "Verify that files introduced on main exist on your branch afterward."
+    ],
+    "checks": [
+      {
+        "name": "On the feature branch",
+        "explanation": ["Ensure the current branch is 'feat' as prepared by the script."],
+        "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" = \"feat\""
+      },
+      {
+        "name": "Main commits are present",
+        "explanation": ["Commits from 'main' (subjects 'second commit' and 'third commit') should be in your branch history after syncing."],
+        "command": "git log --pretty=%s | grep -Fxq 'second commit' && git log --pretty=%s | grep -Fxq 'third commit'"
+      },
+      {
+        "name": "Files from main exist",
+        "explanation": ["Files added on 'main' should exist in the working tree with expected content."],
+        "command": "test -f file2.txt && test -f file3.txt && grep -qx 'content2' file2.txt && grep -qx 'content3' file3.txt"
       }
     ]
   }

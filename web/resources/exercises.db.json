@@ -542,5 +542,53 @@
         "explanation": ["Both files from the feature branch should be present in the worktree"]
       }
     ]
+  },
+  {
+    "exercise_title": "Untracked File Prevents Checkout",
+    "exercise_description": [
+      "I have an untracked file called 'file2.txt' on branch 'feat'.",
+      "This file exists and is tracked on 'main'.",
+      "When I try to checkout 'main' I get an error about untracked files being overwritten."
+    ],
+    "command_history": [
+      "git checkout main"
+    ],
+    "script": "non_tracked_file_checkout.sh",
+    "hints": [
+      "Use 'git status' to review untracked files blocking the switch.",
+      "Check which branch tracks 'file2.txt' and which doesn't.",
+      "Try stashing untracked files with 'git stash -u' before switching.",
+      "After switching to 'main', restore your work if needed with 'git stash pop'."
+    ],
+    "checks": [
+      {
+        "name": "On main branch",
+        "explanation": [
+          "Ensure you successfully switched to 'main'."
+        ],
+        "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" = \"main\""
+      },
+      {
+        "name": "Tracked file from main present",
+        "explanation": [
+          "The tracked 'file2.txt' version from main should exist with expected content."
+        ],
+        "command": "test -f file2.txt && grep -qx 'content2' file2.txt"
+      },
+      {
+        "name": "Commit present in history",
+        "explanation": [
+          "Verify that 'second commit' from 'main' is in history after switching."
+        ],
+        "command": "git log --pretty=%s | grep -Fxq 'second commit'"
+      },
+      {
+        "name": "Working tree is clean",
+        "explanation": [
+          "Ensure no pending changes remain after resolving the checkout issue."
+        ],
+        "command": "test -z \"$(git status --porcelain)\""
+      }
+    ]
   }
 ]

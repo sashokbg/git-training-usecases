@@ -30,6 +30,6 @@ git merge feat/2 -m "Merge branch feeat/2 into feat/1"
 sed_fakeeditor "s/commit/commit (edited)/g"
 
 GIT_EDITOR="./fake_editor.sh" \
-  GIT_SEQUENCE_EDITOR="sed -i '' '1s/^pick/r/g'" \
+  GIT_SEQUENCE_EDITOR="sed '1s/^pick/r/g'" \
   git rebase -i HEAD~2
 

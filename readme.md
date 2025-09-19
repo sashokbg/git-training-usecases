@@ -322,7 +322,7 @@ And now I see the commits of my colleague as part of my PR
 
 Run:
 ```shell
-. ./foreign_commits_on_my_branch.sh
+. ./unknown_commits_on_my_branch.sh
 ```
 
 ### Use Case: Pulling from another repository fails

@@ -1,5 +1,11 @@
 # Learn Git Project Architecture
 
+## Loading Exercises
+
+When an exercise is loaded each line of the description is displayed in a new paragraph.
+
+Screenshots are displayed under the description and are loaded from the /public folder of nextjs.
+
 ## Adding New Questions
 
 Questions are formulated using a JS file found under `web/resources/exercises.db.json`

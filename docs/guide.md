@@ -2,6 +2,15 @@
 
 ## Loading an exercise
 
+When an exercise is loaded, the following items are displayed:
+
+- A description of what the user wanted to achieve and the problem that they encountered
+- An optional list of screenshots related to the exercise
+- An optional list of commands that the user ran just before the start of the exercise (sh history)
+- A list of hints that can be shown one-at-a-time to help you advance
+- A list of automated checks that will verify that the user has completed the exercise correctly
+- A shell that will allow the user to work on the exercise
+
 ## Changing exercise
 
 ## Shell Login

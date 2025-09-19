@@ -274,6 +274,23 @@ function App() {
                 <p>{currentExercise.exercise_description}</p>
               )}
 
+            {Array.isArray(currentExercise.screenshots) && currentExercise.screenshots.length > 0 && (
+              <div className="exercise-screenshots">
+                <h4>Screenshots:</h4>
+                <div className="screenshots-grid">
+                  {currentExercise.screenshots.map((shot, idx) => {
+                    const src = typeof shot === 'string'
+                      ? (shot.startsWith('/') || shot.startsWith('http') ? shot : `/${shot}`)
+                      : '';
+                    const alt = `${currentExercise.exercise_title} - screenshot ${idx + 1}`;
+                    return (
+                      <img key={idx} src={src} alt={alt} />
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {currentExercise.command_history && currentExercise.command_history.length > 0 && (
               <div className="command-history">
                 <h4>Command History:</h4>

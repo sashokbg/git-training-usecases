@@ -17,6 +17,13 @@
         },
         "description": "A detailed description of the exercise. Each line is a paragraph."
       },
+      "screenshots": {
+        "type": "array",
+        "description": "A list of relative URLs with screenshots to include in the exercise description. Screenshots are loaded from nextjs' public folder.",
+        "items": {
+          "type": "string"
+        }
+      },
       "command_history": {
         "type": "array",
         "items": {

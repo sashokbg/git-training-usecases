@@ -318,5 +318,43 @@
         "command": "test -f file_to_add_to_second_commit"
       }
     ]
+  },
+  {
+    "exercise_title": "Unknown Commits on My Branch",
+    "exercise_description": [
+      "I did some wrong operation",
+      "Now I see the commits of my colleague as part of my PR",
+      "I want to keep only my changes on this branch"
+    ],
+    "screenshots": [
+      "unknown_commits_on_my_branch_01.png"
+    ],
+    "command_history": [
+      "git merge feat/2"
+    ],
+    "script": "unknown_commits_on_my_branch.sh",
+    "hints": [
+      "Use 'git lg' to inspect history and identify foreign commits.",
+      "Those commits likely came from an accidental merge.",
+      "You can rewrite history to drop them: interactive rebase or reset and cherry-pick your own commit(s).",
+      "After rewriting, push with --force-with-lease to update the remote."
+    ],
+    "checks": [
+      {
+        "name": "No merge commit present",
+        "explanation": ["Ensure the branch no longer contains a merge commit that brought in foreign history."],
+        "command": "test -z \"$(git lg | grep 'Merge branch')\""
+      },
+      {
+        "name": "Foreign commits removed",
+        "explanation": ["Commits from the other branch '(other branch)' should not be in current branch history."],
+        "command": "test -z \"$(git lg | grep '(other branch)')\""
+      },
+      {
+        "name": "My work preserved",
+        "explanation": ["Your own commit and file should remain after cleanup."],
+        "command": "git lg | grep -q 'first commit' && test -f file3.txt"
+      }
+    ]
   }
 ]

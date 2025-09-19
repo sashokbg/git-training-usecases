@@ -26,6 +26,9 @@ function App() {
     completedExercises,
     markExerciseComplete,
     unmarkExerciseComplete,
+    score,
+    addScore,
+    subtractScore,
   } = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
   const [showAliasModal, setShowAliasModal] = useState(false);
@@ -41,6 +44,13 @@ function App() {
 
   const url = "http://localhost:5173/shell";
   const currentExercise = exercises[currentExerciseIndex];
+  const getExercisePoints = (exercise) => {
+    if (!exercise) return 0;
+    const fromField = Number(exercise.points);
+    if (Number.isFinite(fromField) && fromField > 0) return Math.floor(fromField);
+    const checks = Array.isArray(exercise.checks) ? exercise.checks.length : 0;
+    return Math.max(1, checks);
+  };
 
   useEffect(() => {
     if (isLoggedIn && exerciseStarted) {
@@ -78,6 +88,8 @@ function App() {
     const title = String(currentExercise.exercise_title || "");
     if (title && completedExercises && completedExercises[title]) {
       unmarkExerciseComplete(title);
+      const pts = getExercisePoints(currentExercise);
+      subtractScore(pts);
     }
 
     setExerciseStarted(true);
@@ -203,7 +215,12 @@ function App() {
         if (total > 0 && passed === total) {
           const t = String(currentExercise.exercise_title || "");
           if (t) {
+            const already = completedExercises && completedExercises[t];
             markExerciseComplete(t);
+            if (!already) {
+              const pts = getExercisePoints(currentExercise);
+              addScore(pts);
+            }
           }
         }
       },
@@ -250,9 +267,7 @@ function App() {
           >
             <span className="exercise-number">{index + 1}.</span>
             <span className="exercise-title-short">{exercise.exercise_title}</span>
-            {completedExercises && completedExercises[exercise.exercise_title] && (
-              <span title="Completed" style={{ marginLeft: '8px' }}>✅</span>
-            )}
+            <span className="points-badge">{getExercisePoints(exercise)}p</span>
           </div>
         ))}
       </div>
@@ -263,6 +278,10 @@ function App() {
         </header>
 
         <div className="exercise-content">
+          <div className="exercise-score-row">
+            <div></div>
+            <div className="score-badge" title="Total score">Score: {score || 0}</div>
+          </div>
           <h2 className="exercise-title">{currentExercise.exercise_title}</h2>
 
           <div className="exercise-description">

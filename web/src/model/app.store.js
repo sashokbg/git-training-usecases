@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 
 const COMPLETED_STORAGE_KEY = 'completed.exercises';
+const SCORE_STORAGE_KEY = 'score.total';
 
 function loadCompletedFromStorage() {
   try {
@@ -21,6 +22,26 @@ function saveCompletedToStorage(map) {
   }
 }
 
+function loadScoreFromStorage() {
+  try {
+    if (typeof localStorage === 'undefined') return 0;
+    const raw = localStorage.getItem(SCORE_STORAGE_KEY);
+    const n = Number(raw);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  } catch (e) {
+    return 0;
+  }
+}
+
+function saveScoreToStorage(value) {
+  try {
+    if (typeof localStorage === 'undefined') return;
+    const v = Math.max(0, Number(value) || 0);
+    localStorage.setItem(SCORE_STORAGE_KEY, String(v));
+  } catch (e) {
+  }
+}
+
 export const useAppStore = create((set, get) => ({
   isLoggedIn: false,
   loginInProgress: false,
@@ -28,6 +49,7 @@ export const useAppStore = create((set, get) => ({
   backgroundOpInProgress: false,
   currentEditor: "",
   completedExercises: loadCompletedFromStorage(), // { [exerciseTitle]: true }
+  score: loadScoreFromStorage(),
 
   setCurrentEditor: (value) => set({ currentEditor: value }),
   setShowAliasImport: (value) => set({ showAliasImport: value }),
@@ -53,6 +75,20 @@ export const useAppStore = create((set, get) => ({
     delete next[title];
     saveCompletedToStorage(next);
     set({ completedExercises: next });
+  },
+
+  addScore: (points) => {
+    const p = Math.max(0, Number(points) || 0);
+    const next = (get().score || 0) + p;
+    saveScoreToStorage(next);
+    set({ score: next });
+  },
+
+  subtractScore: (points) => {
+    const p = Math.max(0, Number(points) || 0);
+    const next = Math.max(0, (get().score || 0) - p);
+    saveScoreToStorage(next);
+    set({ score: next });
   },
 }));
 

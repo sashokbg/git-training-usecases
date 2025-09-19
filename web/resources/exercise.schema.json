@@ -33,6 +33,10 @@
       "script": {
         "type": "string"
       },
+      "points": {
+        "type": "number",
+        "description": "Optional point value for the exercise. If omitted, UI uses number of checks (min 1)."
+      },
       "hints": {
         "type": "array",
         "items": {

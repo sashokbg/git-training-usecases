@@ -146,3 +146,7 @@ The app uses a centralized state store implemented using Zustand
 ## Testing
 
 Testing is done using end-to-end tests written in playwright.
+
+## Score Calculation
+
+Score is preserved in the local storage so that it is not lost when the user refreshes the page.

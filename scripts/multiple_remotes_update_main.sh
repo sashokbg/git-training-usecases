@@ -28,3 +28,4 @@ git add .
 git commit -m "(Upstream) second commit"
 
 git push origin main
+cd $top_dir/workspace/$REPO_NAME

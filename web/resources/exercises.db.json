@@ -483,5 +483,38 @@
         "command": "grep 'content' dist/file1.txt -q"
       }
     ]
+  },
+  {
+    "exercise_title": "Multiple Remotes",
+    "exercise_description": [
+      "I forked a repository from a remote",
+      "Someone has pushed some new code to the original remote in branch main",
+      "I want to get the latest changes from the original remote",
+      "The second remote is located at file:///git/.git-repos/multiple_remotes_update_main-upstream.git"
+    ],
+    "command_history": [
+    ],
+    "script": "multiple_remotes_update_main.sh",
+    "hints": [
+      "Use 'git remote -v' to list remotes.",
+      "You can add the new remote with the git remote add command",
+      "You can then pull from the remote branch with git pull <remote2> main"
+    ],
+    "checks": [
+      {
+        "name": "Check the remote",
+        "command": "git remote -v | grep -q 'multiple_remotes_update_main-upstream'",
+        "explanation": [
+          "The second remote has been added."
+        ]
+      },
+      {
+        "name": "Check the worktree",
+        "command": "test -f file2.txt",
+        "explanation": [
+          "Check that the worktree has been updated with the content from the new remote."
+        ]
+      }
+    ]
   }
 ]

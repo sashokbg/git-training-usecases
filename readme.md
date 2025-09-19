@@ -395,3 +395,7 @@ The commit history of the other repo needs to be preserved
 SOLUTION: git subtree add --prefix=backend backend main
 
 ## Use Case: Git Worktree
+
+## Use Case: Revert files from a previous commit
+
+I have deleted some files in a previous commit. I want to restore some of the files, without creating a revert commit.

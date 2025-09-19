@@ -516,5 +516,31 @@
         ]
       }
     ]
+  },
+  {
+    "exercise_title": "Merge with Linear History",
+    "exercise_description": [
+      "I finished working on my feature",
+      "And I want to merge my code to main",
+      "But I do not want to generate a merge commit",
+      "In order to keep history clean and linear"
+    ],
+    "command_history": [
+    ],
+    "script": "no_merge_to_main.sh",
+    "hints": [
+    ],
+    "checks": [
+      {
+        "name": "No merge commits",
+        "command": "test -z $(git rev-list --merges HEAD)",
+        "explanation": ["There should be no merge commits in the commits history."]
+      },
+      {
+        "name": "Check the worktree",
+        "command": "test -f file1.txt && test -f file2.txt",
+        "explanation": ["Both files from the feature branch should be present in the worktree"]
+      }
+    ]
   }
 ]

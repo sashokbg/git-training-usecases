@@ -290,6 +290,7 @@ I want to transfer current branch to new GIT repository as a new project
 ### Use Case: I want to ignore a directory but something is off
 
 I want to ignore the dist directory
+But when I add it to .gitignore it is not ignored
 
 Run:
 ```shell

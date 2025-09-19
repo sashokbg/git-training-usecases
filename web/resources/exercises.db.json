@@ -17,12 +17,16 @@
     "checks": [
       {
         "name": "Check commit message",
-        "explanation": ["Check that the user has closed the editor with the commit message prompt."],
+        "explanation": [
+          "Check that the user has closed the editor with the commit message prompt."
+        ],
         "command": "test $(ps aux | grep -c \".git/MERGE_MSG\") -lt 2"
       },
       {
         "name": "Check git history",
-        "explanation": ["Check the git history for presence of git merge commits."],
+        "explanation": [
+          "Check the git history for presence of git merge commits."
+        ],
         "command": "test -z \"$(git lg | grep \"Merge branch 'feat' - Git Master (HEAD -> main)\")\""
       }
     ]
@@ -47,17 +51,23 @@
     "checks": [
       {
         "name": "Check git history",
-        "explanation": ["Check the git history for presence of git merge commits."],
+        "explanation": [
+          "Check the git history for presence of git merge commits."
+        ],
         "command": "test -z \"$(git lg | grep \"Merge branch\")\""
       },
       {
         "name": "Check files",
-        "explanation": ["Check that are all files are present in the working tree."],
+        "explanation": [
+          "Check that are all files are present in the working tree."
+        ],
         "command": "for f in file1.txt file2.txt file3.txt; do [ -f \"$f\" ] || { echo \"Missing $f\"; exit 1; }; done\n"
       },
       {
         "name": "Check commits",
-        "explanation": ["Check all three commits are present 'first', 'second' and 'third'"],
+        "explanation": [
+          "Check all three commits are present 'first', 'second' and 'third'"
+        ],
         "command": "test -n \"$(git log | grep 'third')\""
       }
     ]
@@ -83,12 +93,16 @@
     "checks": [
       {
         "name": "Check commit history",
-        "explanation": ["After rebasing all commits should be present in the history"],
+        "explanation": [
+          "After rebasing all commits should be present in the history"
+        ],
         "command": "for s in \"I too edited file1\" \"edited file1\"; do git log --pretty=%s | grep -Fxq \"$s\" || { echo \"Missing commit: $s\"; exit 1; }; done"
       },
       {
         "name": "Check file content",
-        "explanation": ["The file content should contain both the text from the first and second commits"],
+        "explanation": [
+          "The file content should contain both the text from the first and second commits"
+        ],
         "command": "grep -q 'first' file1.txt && grep -q 'second' file1.txt"
       }
     ]
@@ -114,11 +128,15 @@
       {
         "name": "Check git history for password",
         "command": "test $(git rev-list --objects --all | awk '{print $1}' | xargs -n1 git cat-file -p | grep 'pa$$word' -c) -eq 0",
-        "explanation": ["The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."]
+        "explanation": [
+          "The user should have successfully removed the commit from the history. Check the git objects to ensure that password is no longer present in git's internals."
+        ]
       },
       {
         "name": "Check git history",
-        "explanation": ["Make sure other commits are not lost"],
+        "explanation": [
+          "Make sure other commits are not lost"
+        ],
         "command": "git lg | grep -q \"some content - Git Master\""
       }
     ]
@@ -173,7 +191,9 @@
     "checks": [
       {
         "name": "Check the local branch has been pushed to remote.",
-        "explanation": ["Verify that the user has successfully resolved the error and pushed the branch to the remote."],
+        "explanation": [
+          "Verify that the user has successfully resolved the error and pushed the branch to the remote."
+        ],
         "command": "test $(git branch -a | grep remotes/origin -c) -eq 2"
       }
     ],
@@ -197,7 +217,6 @@
       "echo \"content\" > file3.txt",
       "git add .",
       "git commit -m \"WIP\"",
-
       "echo \"content\" > file4.txt",
       "git add .",
       "git commit -m \"third commit\""
@@ -211,12 +230,16 @@
     "checks": [
       {
         "name": "Check git history",
-        "explanation": ["Check the git history for presence of the WIP commit."],
+        "explanation": [
+          "Check the git history for presence of the WIP commit."
+        ],
         "command": "test -z \"$(git lg | grep \"WIP\")\""
       },
       {
         "name": "Check worktree files",
-        "explanation": ["Check that the file related to the WIP commit has not been lost."],
+        "explanation": [
+          "Check that the file related to the WIP commit has not been lost."
+        ],
         "command": "test -f file3.txt"
       }
     ]
@@ -240,12 +263,16 @@
     "checks": [
       {
         "name": "HEAD is attached to a branch",
-        "explanation": ["Ensure HEAD points to a branch, not a detached state."],
+        "explanation": [
+          "Ensure HEAD points to a branch, not a detached state."
+        ],
         "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" != \"HEAD\""
       },
       {
         "name": "No commits lost",
-        "explanation": ["Verify that the original 'second commit' still exists in the repository graph."],
+        "explanation": [
+          "Verify that the original 'second commit' still exists in the repository graph."
+        ],
         "command": "git rev-list --all --pretty=%s | grep -q \"second commit\""
       }
     ]
@@ -270,17 +297,23 @@
     "checks": [
       {
         "name": "Both changes present in file",
-        "explanation": ["Ensure both lines are present in the working tree after splitting into commits."],
+        "explanation": [
+          "Ensure both lines are present in the working tree after splitting into commits."
+        ],
         "command": "grep -Fxq 'This line should be in first commit' file1.txt && grep -Fxq 'This line should be in a second commit' file1.txt"
       },
       {
         "name": "Two separate commits for the changes",
-        "explanation": ["Verify that each of the last two commits adds exactly one of the lines (order does not matter)."],
+        "explanation": [
+          "Verify that each of the last two commits adds exactly one of the lines (order does not matter)."
+        ],
         "command": "( git show -U0 HEAD -- file1.txt | grep -Fq \"+This line should be in first commit\" && git show -U0 HEAD~1 -- file1.txt | grep -Fq \"+This line should be in a second commit\" ) || ( git show -U0 HEAD -- file1.txt | grep -Fq \"+This line should be in a second commit\" && git show -U0 HEAD~1 -- file1.txt | grep -Fq \"+This line should be in first commit\" )"
       },
       {
         "name": "Initial commit preserved",
-        "explanation": ["Ensure the original 'initial commit' still exists behind the two new commits."],
+        "explanation": [
+          "Ensure the original 'initial commit' still exists behind the two new commits."
+        ],
         "command": "git log -1 --pretty=%s HEAD~2 | grep -q \"initial commit\""
       }
     ]
@@ -304,17 +337,23 @@
     "checks": [
       {
         "name": "Edited commit includes the file",
-        "explanation": ["Verify that the commit with subject 'second' now includes 'file_to_add_to_second_commit'."],
+        "explanation": [
+          "Verify that the commit with subject 'second' now includes 'file_to_add_to_second_commit'."
+        ],
         "command": "second=$(git log --pretty=%H:%s | awk -F: '$2==\"second\"{print $1; exit}'); test -n \"$second\" && git show --pretty= --name-only \"$second\" | grep -qx \"file_to_add_to_second_commit\""
       },
       {
         "name": "Commit order preserved",
-        "explanation": ["Ensure the last two commit subjects remain 'third' then 'second'."],
+        "explanation": [
+          "Ensure the last two commit subjects remain 'third' then 'second'."
+        ],
         "command": "test \"$(git log --pretty=%s -n2 | paste -sd , -)\" = \"third,second\""
       },
       {
         "name": "Worktree contains the file",
-        "explanation": ["The file added to the 'second' commit should also exist in the current working tree."],
+        "explanation": [
+          "The file added to the 'second' commit should also exist in the current working tree."
+        ],
         "command": "test -f file_to_add_to_second_commit"
       }
     ]
@@ -343,17 +382,23 @@
     "checks": [
       {
         "name": "No merge commit present",
-        "explanation": ["Ensure the branch no longer contains a merge commit that brought in foreign history."],
+        "explanation": [
+          "Ensure the branch no longer contains a merge commit that brought in foreign history."
+        ],
         "command": "test -z \"$(git lg | grep 'Merge branch')\""
       },
       {
         "name": "Foreign commits removed",
-        "explanation": ["Commits from the other branch '(other branch)' should not be in current branch history."],
+        "explanation": [
+          "Commits from the other branch '(other branch)' should not be in current branch history."
+        ],
         "command": "test -z \"$(git lg | grep '(other branch)')\""
       },
       {
         "name": "My work preserved",
-        "explanation": ["Your own commit and file should remain after cleanup."],
+        "explanation": [
+          "Your own commit and file should remain after cleanup."
+        ],
         "command": "git lg | grep -q 'first commit' && test -f file3.txt"
       }
     ]
@@ -364,7 +409,7 @@
       "I am working on a feature branch.",
       "A colleague pushed new commits to the main branch.",
       "I want to get the latest changes from main onto my branch and then merge to main.",
-      "You need to keep the history linear and avoid unnecessary merge commits."
+      "I want to keep the history linear and avoid unnecessary merge commits."
     ],
     "command_history": [
       "git rebase origin/main"
@@ -374,24 +419,68 @@
       "Use 'git lg' to inspect both your branch and main.",
       "Fetch remote updates so 'origin/main' points to the newest commit.",
       "Try rebasing your branch onto 'origin/main' to keep history linear.",
-      "Alternatively, you can merge 'origin/main' into your branch if history shape is not critical.",
       "Verify that files introduced on main exist on your branch afterward."
     ],
     "checks": [
       {
         "name": "On the feature branch",
-        "explanation": ["Ensure the current branch is 'feat' as prepared by the script."],
+        "explanation": [
+          "Ensure the current branch is 'feat' as prepared by the script."
+        ],
         "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" = \"feat\""
       },
       {
         "name": "Main commits are present",
-        "explanation": ["Commits from 'main' (subjects 'second commit' and 'third commit') should be in your branch history after syncing."],
+        "explanation": [
+          "Commits from 'main' (subjects 'second commit' and 'third commit') should be in your branch history after syncing."
+        ],
         "command": "git log --pretty=%s | grep -Fxq 'second commit' && git log --pretty=%s | grep -Fxq 'third commit'"
       },
       {
         "name": "Files from main exist",
-        "explanation": ["Files added on 'main' should exist in the working tree with expected content."],
+        "explanation": [
+          "Files added on 'main' should exist in the working tree with expected content."
+        ],
         "command": "test -f file2.txt && test -f file3.txt && grep -qx 'content2' file2.txt && grep -qx 'content3' file3.txt"
+      }
+    ]
+  },
+  {
+    "exercise_title": "Ignore a Directory",
+    "exercise_description": [
+      "I want git to ignore the \"dist\" directories, but for some reason it is not working."
+    ],
+    "command_history": [
+    ],
+    "script": "ignore_dist.sh",
+    "hints": [
+      "Use a .gitignore file at the repository root to ignore build artifacts.",
+      "Add a rule that covers both top-level 'dist/' and nested 'src/dist/'.",
+      "Files already tracked won't be ignored automatically; remove them from the index with 'git rm -r --cached dist src/dist'.",
+      "Commit the .gitignore and the removal from index; do not delete the files from disk.",
+      "Verify with 'git ls-files' or 'git status' that dist paths are no longer tracked and 'src/src.txt' is tracked."
+    ],
+    "checks": [
+      {
+        "name": "Dist paths are ignored",
+        "explanation": [
+          "Ensure typical dist outputs are matched by ignore rules."
+        ],
+        "command": "git check-ignore -q dist/file1.txt && git check-ignore -q src/dist/file2.txt"
+      },
+      {
+        "name": "Dist paths are not tracked",
+        "explanation": [
+          "Ensure no files under 'dist/' or 'src/dist/' remain in the index."
+        ],
+        "command": "test -z \"$(git ls-files | grep -E '^(dist/|src/dist/)')\""
+      },
+      {
+        "name": "File Content is not Deleted",
+        "explanation": [
+          "Make sure local files are not deleted after ignoring them."
+        ],
+        "command": "grep 'content' dist/file1.txt -q"
       }
     ]
   }

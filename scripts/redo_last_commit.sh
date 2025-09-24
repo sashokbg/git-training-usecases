@@ -23,4 +23,4 @@ echo "content3" > file3.txt
 git add .
 git commit -m "Redo this commit <--"
 
-touch file_to_add.txt
+echo "file to add content" > file_to_add.txt

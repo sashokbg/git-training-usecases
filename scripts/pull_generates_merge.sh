@@ -29,5 +29,6 @@ git add file1.txt
 git commit -m "first commit"
 
 set +e
+git config pull.rebase false
 git push origin feat
 git pull origin feat

@@ -58,6 +58,6 @@ Every exercise has a number of points related to it. When all checks of the exer
 
 The total score is shown on top right corner of the screen.
 
-[](score_screen.png)
+[Score Calculation](score_screen.png)
 
 

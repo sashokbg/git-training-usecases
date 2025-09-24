@@ -590,5 +590,141 @@
         "command": "test -z \"$(git status --porcelain)\""
       }
     ]
+  },
+  {
+    "exercise_title": "Branch Merged Upon Itself",
+    "exercise_description": [
+      "Me and a colleague worked on the same branch 'feat'.",
+      "They committed a change on the remote and I committed locally.",
+      "When I pulled, Git created a merge commit on my branch.",
+      "I want to keep the history linear and remove the accidental merge."
+    ],
+    "command_history": [
+      "git config pull.rebase true",
+      "git pull origin feat"
+    ],
+    "script": "pull_generates_merge.sh",
+    "hints": [
+      "Use 'git lg' to see the merge commit that pull created."
+    ],
+    "checks": [
+      {
+        "name": "No merge commits present",
+        "explanation": [
+          "Ensure the branch history is linear (no merge commits)."
+        ],
+        "command": "test -z \"$(git rev-list --merges HEAD)\""
+      },
+      {
+        "name": "Both commits preserved",
+        "explanation": [
+          "Verify both the colleague's and your 'first commit' exist (authors differ)."
+        ],
+        "command": "git lg | grep -Fq 'first commit - Tim Who Eats Your Sandwich' && git lg | grep -Fq 'first commit - Git Master'"
+      },
+      {
+        "name": "On branch 'feat'",
+        "explanation": [
+          "Confirm you are working on the expected branch."
+        ],
+        "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" = \"feat\""
+      },
+      {
+        "name": "Worktree contains the file",
+        "explanation": [
+          "Ensure 'file1.txt' exists after resolving history. Content may be from either commit."
+        ],
+        "command": "test -f file1.txt && ( grep -qx 'content 1' file1.txt || grep -qx 'content from colleague' file1.txt )"
+      }
+    ]
+  },
+  {
+    "exercise_title": "Quickly Change Branch",
+    "exercise_description": [
+      "I am working on a feature and have not yet committed.",
+      "I need to quickly switch to 'main' to fix an urgent issue.",
+      "I want to keep my current work safe while switching."
+    ],
+    "command_history": [
+    ],
+    "script": "quickly_change_branch.sh",
+    "hints": [
+      "You can create a wip commit",
+      "Or use stash"
+    ],
+    "checks": [
+      {
+        "name": "On main branch",
+        "explanation": [
+          "Ensure you successfully switched to 'main'."
+        ],
+        "command": "test \"$(git rev-parse --abbrev-ref HEAD)\" = \"main\""
+      },
+      {
+        "name": "Work files not present on main",
+        "explanation": [
+          "Temporary work files should not remain in the working tree after switching."
+        ],
+        "command": "test ! -e work_file.txt && test ! -e src/f1.txt && test ! -e src/f2.txt && test ! -e src/f3.txt && test ! -e src/f4.txt"
+      },
+      {
+        "name": "Changes saved via stash or commit",
+        "explanation": [
+          "Accept either approach: a stash exists, or 'feat' tracks the work files (WIP commit)."
+        ],
+        "command": "test -n \"$(git stash list)\" || git ls-tree -r --name-only feat | grep -Eqx \"work_file.txt|src/f1.txt\""
+      },
+      {
+        "name": "Working tree clean",
+        "explanation": [
+          "Ensure no pending changes remain on 'main' after the switch."
+        ],
+        "command": "test -z \"$(git status --porcelain)\""
+      }
+    ]
+  },
+  {
+    "exercise_title": "Redo Last Commit",
+    "exercise_description": [
+      "I did a commit, but I want to add some files to it.",
+      "I want to push my code to the remote."
+    ],
+    "command_history": [
+      "touch file_to_add.txt"
+    ],
+    "script": "redo_last_commit.sh",
+    "hints": [
+      "Be careful not to "
+    ],
+    "checks": [
+      {
+        "name": "Amended commit preserved",
+        "explanation": [
+          "The last two commit subjects should be 'Redo this commit <--' and then 'first commit' (no extra commit created)."
+        ],
+        "command": "test \"$(git log --pretty=%s -n2 | paste -sd , -)\" = \"Redo this commit <--,first commit\""
+      },
+      {
+        "name": "File included in last commit",
+        "explanation": [
+          "Ensure 'file_to_add.txt' is part of the amended last commit."
+        ],
+        "command": "git show --pretty= --name-only HEAD | grep -qx file_to_add.txt"
+      },
+      {
+        "name": "Remote updated to HEAD",
+        "explanation": [
+          "The remote 'origin/main' should point to the amended commit (requires force-with-lease)."
+        ],
+        "command": "git fetch -q origin && test \"$(git rev-parse HEAD)\" = \"$(git rev-parse origin/main)\""
+      },
+      {
+        "name": "Files present in worktree",
+        "explanation": [
+          "Both 'file3.txt' and 'file_to_add.txt' should exist in the working tree."
+        ],
+        "command": "test -f file3.txt && test -f file_to_add.txt && grep -qx 'content3' file3.txt"
+      }
+    ]
   }
 ]

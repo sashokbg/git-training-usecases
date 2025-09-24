@@ -60,4 +60,26 @@ The total score is shown on top right corner of the screen.
 
 [Score Calculation](score_screen.png)
 
+## Exercise Timer
+
+Every exercise has a timer of 1 minute. When the exercise is started, the timer will begin counting down.
+When the timer reaches 0, the exercise will be marked as failed and the corresponding menu item will be highlighted in red.
+
+When the user runs the exercise evaluations (checks), the timer will be paused.
+
+[Time Image](timer.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

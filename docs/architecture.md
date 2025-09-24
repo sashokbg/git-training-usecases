@@ -150,3 +150,9 @@ Testing is done using end-to-end tests written in playwright.
 ## Score Calculation
 
 Score is preserved in the local storage so that it is not lost when the user refreshes the page.
+
+## Exercise Timer
+
+Timer information for success exercises is stored in the local storage with the rest of the info.
+
+Add a new timer service in the services folder in frontend.

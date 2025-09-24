@@ -7,6 +7,7 @@ import Footer from './footer.component';
 import useAppStore from '../model/app.store';
 import ImportAliasesModal from './import_aliases_modal.component';
 import AliasImportService from '../services/alias_parse.service';
+import ExerciseTimerService from '../services/timer.service';
 import {IframeWrapper} from "../model/iframe_wrapper";
 import {LoginOperation} from "../model/operations/login.operation";
 import {RunExerciseScriptOperation} from "../model/operations/run_exercise_script.operation";
@@ -24,11 +25,15 @@ function App() {
     setIsLoggedIn,
     setLoginInProgress,
     completedExercises,
+    failedExercises,
     markExerciseComplete,
     unmarkExerciseComplete,
+    markExerciseFailed,
+    unmarkExerciseFailed,
     score,
     addScore,
     subtractScore,
+    setExerciseTime,
   } = useAppStore();
   const [exerciseStarted, setExerciseStarted] = useState(false);
   const [showAliasModal, setShowAliasModal] = useState(false);
@@ -41,6 +46,9 @@ function App() {
 
   const shellIframeRef = useRef(null);
   const [iframeWrapper, setIframeWrapper] = useState(new IframeWrapper(shellIframeRef));
+  const timerRef = useRef(null);
+  const [remainingSeconds, setRemainingSeconds] = useState(60);
+  const [timerPaused, setTimerPaused] = useState(false);
 
   const url = "http://localhost:5173/shell";
   const currentExercise = exercises[currentExerciseIndex];
@@ -59,10 +67,15 @@ function App() {
   }, [isLoggedIn, exerciseStarted]);
 
   const handleExerciseSelect = (index) => {
+    if (timerRef.current) {
+      try { timerRef.current.stop(); } catch (e) {}
+    }
     setCurrentExerciseIndex(index);
     setExerciseStarted(false);
     setIsLoggedIn(false);
     setLoginInProgress(false);
+    setRemainingSeconds(60);
+    setTimerPaused(false);
   };
 
   const handleRestartExercise = () => {
@@ -72,6 +85,10 @@ function App() {
     for (let i = 0; i < hints.length; i++) {
       const key = `${title}.hint[${i}].seen`;
       localStorage.removeItem(key);
+    }
+
+    if (title) {
+      unmarkExerciseFailed(title);
     }
 
     // Reset evaluation state
@@ -91,6 +108,26 @@ function App() {
       const pts = getExercisePoints(currentExercise);
       subtractScore(pts);
     }
+
+    if (title) {
+      unmarkExerciseFailed(title);
+    }
+
+    if (!timerRef.current) {
+      timerRef.current = new ExerciseTimerService(60,
+        (rem) => setRemainingSeconds(rem),
+        () => {
+          const t = String(currentExercise.exercise_title || "");
+          if (t) {
+            markExerciseFailed(t);
+          }
+        }
+      );
+    } else {
+      timerRef.current.reset(60);
+    }
+    timerRef.current.start();
+    setTimerPaused(false);
 
     setExerciseStarted(true);
     setIsLoggedIn(false);
@@ -199,6 +236,10 @@ function App() {
     const repoDir = `workspace/${repoName}`;
 
     setEvaluating(true);
+    if (timerRef.current && timerRef.current.isRunning()) {
+      timerRef.current.pause();
+      setTimerPaused(true);
+    }
     IframeWrapper.executeInBackground((iframe) => {
       return of(null).pipe(
         delay(100),
@@ -217,19 +258,33 @@ function App() {
           if (t) {
             const already = completedExercises && completedExercises[t];
             markExerciseComplete(t);
+            // in case it was previously failed by timer, clear failed flag
+            unmarkExerciseFailed(t);
             if (!already) {
               const pts = getExercisePoints(currentExercise);
               addScore(pts);
             }
+            const timeUsed = 60 - (Number(remainingSeconds) || 0);
+            setExerciseTime(t, Math.max(0, timeUsed));
+            if (timerRef.current) timerRef.current.stop();
+            setTimerPaused(false);
           }
         }
       },
       error: (err) => {
         setEvaluationError(String(err && err.message ? err.message : err));
         setEvaluating(false);
+        if (timerRef.current && timerRef.current.isRunning()) {
+          timerRef.current.resume();
+          setTimerPaused(false);
+        }
       },
       complete: () => {
         setEvaluating(false);
+        if (timerRef.current && timerRef.current.isRunning()) {
+          timerRef.current.resume();
+          setTimerPaused(false);
+        }
       }
     });
   };
@@ -262,7 +317,7 @@ function App() {
         {exercises.map((exercise, index) => (
           <div
             key={index}
-            className={`sidebar-item ${index === currentExerciseIndex ? 'active' : ''} ${completedExercises && completedExercises[exercise.exercise_title] ? 'completed' : ''}`}
+            className={`sidebar-item ${index === currentExerciseIndex ? 'active' : ''} ${completedExercises && completedExercises[exercise.exercise_title] ? 'completed' : ''} ${failedExercises && failedExercises[exercise.exercise_title] ? 'failed' : ''}`}
             onClick={() => handleExerciseSelect(index)}
           >
             <span className="exercise-number">{index + 1}.</span>
@@ -283,6 +338,15 @@ function App() {
             <div className="score-badge" title="Total score">Score: {score || 0}</div>
           </div>
           <h2 className="exercise-title">{currentExercise.exercise_title}</h2>
+
+          {exerciseStarted && (
+            <div className="timer-row">
+              <span className="timer-label">Le timer:</span>
+              <div className="timer-display" title={timerPaused ? 'Timer paused while evaluating' : 'Time remaining'}>
+                {String(Math.floor(remainingSeconds / 60)).padStart(2, '0')}:{String(remainingSeconds % 60).padStart(2, '0')}
+              </div>
+            </div>
+          )}
 
           <div className="exercise-description">
             {Array.isArray(currentExercise.exercise_description)
